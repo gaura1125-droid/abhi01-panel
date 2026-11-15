@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APK Builder - Armaan</title>
+<link rel="stylesheet" href="/css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet">
+<style>
+:root {
+  --bg: #080b12;
+  --bg-soft: #0d1220;
+  --card: rgba(255,255,255,0.035);
+  --card-strong: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.14);
+  --accent: #4ecca3;
+  --accent-2: #7de8c4;
+  --accent-dim: rgba(78,204,163,.12);
+  --text: #e8edf5;
+  --muted: rgba(232,237,245,0.45);
+  --warn: #fbbf24;
+  --danger: #ef4444;
+  --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background:
+    radial-gradient(900px 500px at 15% -10%, rgba(78,204,163,.10), transparent 60%),
+    radial-gradient(800px 500px at 95% 0%, rgba(60,120,255,.08), transparent 65%),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+.page { max-width: 1240px; margin: 0 auto; padding: 22px 18px 60px; }
+
+.page-header {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 14px 18px; margin-bottom: 22px;
+  border: 1px solid var(--border); border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
+  backdrop-filter: blur(14px);
+}
+.back-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 14px; border-radius: 10px; font-size: .82rem; font-weight: 600;
+  color: var(--text); text-decoration: none;
+  border: 1px solid var(--border-strong); background: rgba(255,255,255,.04);
+  transition: .18s ease;
+}
+.back-btn:hover { background: rgba(255,255,255,.09); border-color: rgba(78,204,163,.5); }
+.page-header-title { flex: 1; min-width: 200px; }
+.page-title { font-size: 1.35rem; font-weight: 750; letter-spacing: -.02em; display: flex; align-items: center; gap: 9px; }
+.page-title svg { width: 25px; height: 25px; stroke: var(--accent); fill: none; }
+.page-subtitle { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+.header-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .04em;
+  padding: 7px 11px; border-radius: 999px;
+  color: var(--accent-2); background: var(--accent-dim);
+  border: 1px solid rgba(78,204,163,.3);
+  max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
+@media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+.glass-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px;
+  backdrop-filter: blur(14px);
+  margin-bottom: 18px;
+}
+.card-title { font-size: .95rem; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.card-title svg { width: 17px; height: 17px; stroke: var(--accent); fill: none; }
+
+.section-kicker { display: flex; align-items: flex-start; gap: 11px; margin: 6px 0 16px; }
+.section-kicker + .section-kicker { margin-top: 28px; }
+.section-kicker .num {
+  width: 27px; height: 27px; flex: 0 0 27px; border-radius: 9px;
+  display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #04110c;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 8px 22px rgba(78,204,163,.28);
+}
+.section-kicker h3 { font-size: .98rem; font-weight: 700; }
+.section-kicker p { font-size: .74rem; color: var(--muted); margin-top: 2px; line-height: 1.45; }
+
+.form-group { margin-bottom: 16px; }
+.form-label { display: flex; align-items: center; gap: 6px; font-size: .8rem; font-weight: 650; margin-bottom: 7px; color: #dbe4f2; }
+.form-label svg { width: 15px; height: 15px; stroke: var(--accent); fill: none; flex: 0 0 15px; }
+.form-text { font-size: .72rem; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+.endpoint-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.endpoint-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 11px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border-strong); background: var(--card-strong);
+  color: var(--text); font-size: .7rem; font-family: var(--mono);
+  transition: border-color .15s, background .15s, transform .15s;
+}
+.endpoint-chip:hover { border-color: var(--accent); background: var(--accent-dim); transform: translateY(-1px); }
+.endpoint-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.endpoint-chip.loopback .dot { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+.form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.form-row .form-group { flex: 1; min-width: 150px; }
+
+.glass-input, .textarea-input, select.glass-input {
+  width: 100%; padding: 12px 14px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--border); border-radius: 11px;
+  color: var(--text); font-size: .9rem; outline: none;
+  transition: border .18s ease, background .18s ease;
+}
+.glass-input:focus, .textarea-input:focus, select.glass-input:focus {
+  border-color: rgba(78,204,163,.65); background: rgba(78,204,163,.05);
+}
+select.glass-input option { background: #0f1626; color: var(--text); }
+.glass-input::placeholder, .textarea-input::placeholder { color: rgba(232,237,245,.28); }
+.textarea-input { min-height: 150px; font-family: var(--mono); font-size: .76rem; resize: vertical; line-height: 1.55; }
+.json-actions { display: flex; gap: 8px; margin-top: 9px; flex-wrap: wrap; }
+
+.upload-zone {
+  border: 2px dashed var(--border-strong); border-radius: 13px;
+  padding: 26px 16px; text-align: center; cursor: pointer;
+  transition: .18s ease; background: rgba(255,255,255,.015);
+}
+.upload-zone:hover, .upload-zone.drag-over { border-color: var(--accent); background: var(--accent-dim); }
+.upload-zone svg { width: 34px; height: 34px; stroke: var(--accent); fill: none; }
+.upload-zone p { margin-top: 7px; font-size: .82rem; font-weight: 600; }
+.upload-zone .small { font-size: .7rem; color: var(--muted); font-weight: 400; margin-top: 4px; }
+.icon-preview { display: none; align-items: center; gap: 12px; margin-top: 11px; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: rgba(0,0,0,.18); }
+.icon-preview img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border-strong); }
+.icon-preview .name { font-size: .76rem; color: var(--muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.icon-preview .remove { background: none; border: none; color: #f87171; cursor: pointer; font-size: 1.25rem; line-height: 1; }
+
+.toggle-row { display: flex; align-items: center; gap: 16px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; background: linear-gradient(135deg, rgba(78,204,163,.07), rgba(255,255,255,.02)); margin-bottom: 16px; }
+.toggle-copy { flex: 1; min-width: 0; }
+.toggle-copy b { display: block; font-size: .86rem; }
+.toggle-copy span { display: block; font-size: .72rem; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+.switch { position: relative; width: 52px; height: 29px; flex: 0 0 auto; }
+.switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 2; }
+.switch .slider { position: absolute; inset: 0; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.1); transition: .22s ease; }
+.switch .slider::before { content: ''; position: absolute; width: 21px; height: 21px; left: 3px; top: 3px; border-radius: 50%; background: #9fb0c7; transition: .22s ease; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+.switch input:checked + .slider { background: linear-gradient(135deg, var(--accent), #2bbd8d); border-color: rgba(78,204,163,.6); box-shadow: 0 0 0 4px rgba(78,204,163,.12); }
+.switch input:checked + .slider::before { transform: translateX(23px); background: #04110c; }
+.switch input:focus-visible + .slider { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.vault-state { display: flex; align-items: flex-start; gap: 9px; padding: 11px 13px; border-radius: 11px; border: 1px solid var(--border); background: rgba(5,10,18,.45); font-size: .73rem; color: var(--muted); line-height: 1.55; margin-top: 12px; }
+.vault-state .material-symbols-outlined { font-size: 16px; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+.vault-state.warn { border-color: rgba(251,191,36,.28); background: rgba(251,191,36,.06); color: #ffe6a3; }
+.vault-state.warn .material-symbols-outlined { color: var(--warn); }
+.vault-state.success { border-color: rgba(78,204,163,.3); background: rgba(78,204,163,.08); color: #8ff0cd; }
+.vault-state code { font-family: var(--mono); font-size: .7rem; word-break: break-all; }
+
+.key-box { display: flex; align-items: flex-start; gap: 13px; padding: 15px; border: 1px solid rgba(78,204,163,.28); border-radius: 14px; background: linear-gradient(135deg, rgba(78,204,163,.1), rgba(5,10,18,.35)); }
+.key-box .key-icon { width: 38px; height: 38px; flex: 0 0 38px; border-radius: 11px; display: grid; place-items: center; background: rgba(78,204,163,.15); border: 1px solid rgba(78,204,163,.3); color: var(--accent); }
+.key-box .key-copy { flex: 1; min-width: 0; }
+.key-box b { display: block; font-size: .8rem; margin-bottom: 6px; }
+.key-box code { display: inline-block; font-family: var(--mono); font-size: .72rem; color: var(--accent-2); background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 7px; padding: 4px 8px; word-break: break-all; }
+.key-box .hint { display: block; font-size: .69rem; color: var(--muted); margin-top: 7px; line-height: 1.5; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border-radius: 11px; font-size: .84rem; font-weight: 650; border: none; cursor: pointer; transition: .18s ease; }
+.btn-primary { width: 100%; margin-top: 8px; padding: 14px 22px; font-size: .92rem; color: #04110c; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 12px 30px rgba(78,204,163,.22); }
+.btn-primary:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-secondary { background: rgba(255,255,255,.05); color: var(--text); border: 1px solid var(--border-strong); }
+.btn-secondary:hover { background: rgba(255,255,255,.1); }
+
+/* Premium Action Buttons Panel */
+.action-buttons-panel {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.action-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: .82rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all .18s ease;
+  min-width: 140px;
+  font-family: inherit;
+}
+.action-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.action-btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.action-btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* Tunnel Status Display */
+.tunnel-status-display {
+  padding: 16px;
+  background: rgba(4, 10, 18, 0.5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+}
+.tunnel-status-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  color: var(--muted);
+  gap: 8px;
+}
+.tunnel-status-empty .material-symbols-outlined {
+  font-size: 32px;
+  color: var(--accent);
+  opacity: 0.6;
+}
+.tunnel-status-display .tunnel-status-content {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+}
+.tunnel-status-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.tunnel-status-row:last-child {
+  border-bottom: none;
+}
+.tunnel-status-label {
+  color: var(--text2);
+  font-size: 12px;
+}
+.tunnel-status-value {
+  font-family: var(--mono);
+  color: var(--text);
+}
+
+/* Build console */
+.console-card { border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 18px; background: #070a10; }
+.console-head { display: flex; align-items: center; gap: 10px; padding: 11px 15px; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border-bottom: 1px solid var(--border); }
+.console-dots { display: flex; gap: 6px; }
+.console-dots i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.console-dots i:nth-child(1) { background: #ff5f56; }
+.console-dots i:nth-child(2) { background: #ffbd2e; }
+.console-dots i:nth-child(3) { background: #27c93f; }
+.console-title { flex: 1; font-family: var(--mono); font-size: .7rem; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+.console-status { font-family: var(--mono); font-size: .66rem; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); background: rgba(255,255,255,.03); }
+.console-status.running { color: var(--warn); border-color: rgba(251,191,36,.35); background: rgba(251,191,36,.08); }
+.console-status.success { color: var(--accent-2); border-color: rgba(78,204,163,.4); background: rgba(78,204,163,.1); }
+.console-status.error { color: #ff9c9c; border-color: rgba(239,68,68,.4); background: rgba(239,68,68,.1); }
+.console-progress { display: flex; align-items: center; gap: 12px; padding: 12px 15px 4px; }
+.progress-track { flex: 1; height: 7px; border-radius: 999px; background: rgba(255,255,255,.07); overflow: hidden; }
+.progress-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #2bbd8d, var(--accent-2)); transition: width .35s ease; }
+.progress-label { font-family: var(--mono); font-size: .66rem; color: var(--muted); min-width: 92px; text-align: right; }
+.console-stage { padding: 2px 15px 10px; font-size: .7rem; color: var(--accent-2); font-family: var(--mono); }
+.console-log {
+  margin: 0; padding: 14px 15px 18px; max-height: 300px; min-height: 130px; overflow-y: auto;
+  font-family: var(--mono); font-size: .72rem; line-height: 1.65; color: #b9c6d8;
+  background:
+    linear-gradient(180deg, rgba(78,204,163,.02), transparent 25%),
+    repeating-linear-gradient(0deg, transparent, transparent 22px, rgba(255,255,255,.012) 22px, rgba(255,255,255,.012) 23px);
+}
+.console-log .t { color: rgba(125,232,196,.5); margin-right: 8px; user-select: none; }
+.console-log .line-error { color: #ff9c9c; }
+.console-log .line-ok { color: #8ff0cd; }
+.console-log .line-cmd { color: #8ab4ff; }
+.console-empty { color: rgba(232,237,245,.28); font-style: italic; }
+
+/* Build history table */
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 13px; }
+.builds-table { width: 100%; border-collapse: collapse; font-size: .78rem; min-width: 640px; }
+.builds-table th { text-align: left; font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 11px 13px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.025); white-space: nowrap; }
+.builds-table td { padding: 12px 13px; border-bottom: 1px solid rgba(255,255,255,.045); vertical-align: middle; }
+.builds-table tr:last-child td { border-bottom: none; }
+.builds-table tbody tr:hover { background: rgba(78,204,163,.035); }
+.builds-table .app-name { font-weight: 650; }
+.builds-table .pkg { font-family: var(--mono); font-size: .68rem; color: var(--muted); }
+.build-app { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.build-app img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border-strong); background: rgba(0,0,0,.3); flex: 0 0 42px; }
+.build-app .copy { min-width: 0; }
+.build-app .copy .app-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row-actions { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.delete-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 10px; border-radius: 8px; font-size: .72rem; font-weight: 650; color: #ff9c9c; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.35); cursor: pointer; }
+.delete-btn:hover { background: rgba(239,68,68,.2); }
+.delete-btn:disabled { opacity: .5; cursor: wait; }
+.config-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 14px; }
+.config-preview .row { padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: rgba(5,10,18,.4); min-width: 0; }
+.config-preview .row strong { display: block; font-size: .62rem; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.config-preview .row span { font-family: var(--mono); font-size: .72rem; color: var(--accent-2); word-break: break-all; }
+.inline-field-row { display: flex; gap: 8px; align-items: stretch; }
+.inline-field-row .glass-input { flex: 1; min-width: 0; }
+.inline-field-row .btn { flex: 0 0 auto; white-space: nowrap; }
+.mode-pill { display: inline-flex; align-items: center; gap: 5px; font-size: .64rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--border); }
+.mode-pill.firebase { color: var(--accent-2); border-color: rgba(78,204,163,.35); background: rgba(78,204,163,.08); }
+.mode-pill.direct { color: #9ec1ff; border-color: rgba(110,160,255,.35); background: rgba(110,160,255,.08); }
+.mode-pill.tunnel { color: #d8b4fe; border-color: rgba(168,85,247,.35); background: rgba(168,85,247,.10); }
+.download-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 8px; font-size: .72rem; font-weight: 650; color: var(--accent-2); text-decoration: none; background: rgba(78,204,163,.1); border: 1px solid rgba(78,204,163,.3); white-space: nowrap; }
+.download-btn:hover { background: rgba(78,204,163,.18); }
+.empty-state { text-align: center; color: var(--muted); font-size: .8rem; padding: 22px 12px; }
+.empty-state.error { color: #ff9c9c; }
+
+/* Sidebar */
+.side-card .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.info-item { font-size: .74rem; line-height: 1.5; }
+.info-item strong { display: block; color: var(--muted); font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 3px; }
+.info-item span { color: var(--text); word-break: break-word; }
+.side-note { font-size: .72rem; color: var(--muted); line-height: 1.55; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.side-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.side-list li { display: flex; align-items: center; gap: 9px; font-size: .76rem; color: var(--muted); }
+.side-list .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: 0 0 7px; }
+.side-list .dot.warn { background: var(--warn); }
+
+.toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; max-width: 90vw; }
+.toast { padding: 12px 16px; border-radius: 11px; color: #fff; font-size: .8rem; box-shadow: 0 12px 30px rgba(0,0,0,.4); animation: slideIn .25s ease; word-break: break-word; }
+.toast.success { background: #148f68; }
+.toast.error { background: #c0392b; }
+.toast.info { background: #2563eb; }
+@keyframes slideIn { from { transform: translateY(14px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.spinner { width: 15px; height: 15px; border: 2px solid rgba(4,17,12,.25); border-top-color: #04110c; border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <a href="/" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to Dashboard
+    </a>
+    <div class="page-header-title">
+      <div class="page-title">
+        <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        APK Studio
+      </div>
+      <div class="page-subtitle">Build a branded, token-bound APK for your own devices — live console included.</div>
+    </div>
+    <div class="header-badge" id="headerTokenDisplay" title="Connection key preview">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.6 7.6a5 5 0 1 1-7.1 7.1 5 5 0 0 1 7.1-7.1zm0 0L15 7m0 0l3 3m-3-3l-3-3"/></svg>
+      <span><%= tokenPreview %></span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <form id="buildForm" enctype="multipart/form-data" novalidate>
+        <div class="glass-card">
+          <!-- 1. Identity -->
+          <div class="section-kicker">
+            <div class="num">1</div>
+            <div>
+              <h3>App Identity</h3>
+              <p>Set the launcher name and replace the icon. Everything else stays signed and installable.</p>
+            </div>
+          </div>
+
+          <% if (isSuperAdmin) { %>
+          <div class="form-group">
+            <label class="form-label" for="tenantSelect">
+              <svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Build For Account
+            </label>
+            <select name="user_id" id="tenantSelect" class="glass-input">
+              <option value="">Myself (super admin)</option>
+              <% users.forEach(function (u) { %>
+              <option value="<%= u.id %>" data-username="<%= u.username %>" data-firebase="<%= u.firebase && u.firebase.enabled ? (u.firebase.project_id || 'linked') : '' %>"><%= u.username %> (#<%= u.id %>)</option>
+              <% }); %>
+            </select>
+            <div class="form-text" id="tenantNote">Super admin mode: every build embeds the selected account&apos;s own connection key. Sub-users only ever build for themselves.</div>
+          </div>
+          <% } %>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="appName">
+                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                Application Display Name
+              </label>
+              <input type="text" name="app_name" id="appName" class="glass-input" placeholder="YouTube Premium" maxlength="50" value="YouTube Premium">
+              <div class="form-text">Shown on the device launcher. Maximum 50 characters.</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="websiteUrl">
+                <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+                App Website URL
+              </label>
+              <input type="url" name="website_url" id="websiteUrl" class="glass-input" placeholder="https://example.com" autocomplete="off" spellcheck="false">
+              <div class="form-text">The site the installed app opens. Must be HTTPS (http:// is only allowed for localhost).</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <svg viewBox="0 0 24 24" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              Launcher Icon
+            </label>
+            <div class="upload-zone" id="dropZone">
+              <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p>Drop image here or click to browse</p>
+              <p class="small">PNG / JPG / WebP — auto-resized for every density</p>
+              <input type="file" name="icon" id="iconInput" accept=".png,.jpg,.jpeg,.webp" style="display:none">
+            </div>
+            <div class="icon-preview" id="iconPreview">
+              <img src="" alt="Icon preview">
+              <span class="name" id="iconName"></span>
+              <button type="button" class="remove" onclick="clearIcon()" title="Remove icon">&times;</button>
+            </div>
+          </div>
+
+          <!-- 2. Connection -->
+          <div class="section-kicker">
+            <div class="num">2</div>
+            <div>
+              <h3>Connection Mode</h3>
+              <p>Firebase + Cloudflare tunnel, or a direct IP and port baked into the APK.</p>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-copy">
+              <b>Firebase + Cloudflare Tunnel</b>
+              <span>ON injects the saved Firebase config and tunnel URL. OFF strips every Firebase credential and uses Direct IP:Port.</span>
+            </div>
+            <label class="switch" title="Enable or disable Firebase configuration injection">
+              <input type="checkbox" id="firebaseToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <input type="hidden" name="firebase_enabled" id="firebaseEnabled" value="0">
+
+          <div class="form-row" id="directModeFields">
+            <div class="form-group">
+              <label class="form-label" for="ipAddress">
+                <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+                Direct IP / Host
+              </label>
+              <input type="text" name="ip_address" id="ipAddress" class="glass-input" placeholder="203.0.113.10 or panel.example.com" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="form-group" style="max-width:180px">
+              <label class="form-label" for="port">
+                <svg viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01"/></svg>
+                Port
+              </label>
+              <input type="number" name="port" id="port" class="glass-input" placeholder="<%= apkPort %>" min="1" max="65535" inputmode="numeric">
+            </div>
+          </div>
+          <div class="form-text" id="endpointHint">Leave the IP/port blank to use the server's current public URL (<%= publicUrl || 'not configured' %>). With Firebase OFF, that endpoint is the only transport.</div>
+          <div class="endpoint-chips" id="endpointChips">
+            <% if (lanAddress) { %>
+            <button type="button" class="endpoint-chip" data-ip="<%= lanAddress %>" data-port="<%= apkPort %>" title="Use this when the phone is on the same Wi-Fi as this server">
+              <span class="dot"></span> Same Wi-Fi · <%= lanAddress %>:<%= apkPort %>
+            </button>
+            <% } %>
+            <button type="button" class="endpoint-chip loopback" data-ip="127.0.0.1" data-port="<%= apkPort %>" title="Use this only when the server runs in Termux on the phone itself">
+              <span class="dot"></span> Same phone (Termux) · 127.0.0.1:<%= apkPort %>
+            </button>
+          </div>
+
+          <div class="vault-state" id="connectionState">
+            <span class="material-symbols-outlined">bolt</span>
+            <span id="connectionStateText">Direct mode selected — Firebase credentials will be removed.</span>
+          </div>
+
+          <!-- Cloudflare Tunnel URL -->
+          <div class="form-group" id="cloudflareUrlGroup" style="margin-top: 18px;">
+            <label class="form-label" for="cloudflareUrl">
+              <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><path d="M12 6v6l4 2"/></svg>
+              Cloudflare Tunnel URL
+            </label>
+            <div class="inline-field-row">
+              <input type="url" name="cloudflare_url" id="cloudflareUrl" class="glass-input" placeholder="https://your-tunnel.trycloudflare.com" autocomplete="off" spellcheck="false">
+              <button type="button" class="btn btn-secondary" id="refreshCloudflareBtn" title="Fetch the live Cloudflare tunnel URL" aria-label="Refresh Cloudflare tunnel URL">
+                <span class="material-symbols-outlined" style="font-size:16px">refresh</span>
+                Refresh URL
+              </button>
+            </div>
+            <div class="form-text">Backend connection URL. It is auto-filled from the running Cloudflare tunnel before every build; you can also paste a stable custom-domain URL.</div>
+          </div>
+
+          <!-- 3. Firebase JSON -->
+          <div id="firebaseConfigArea" style="display:none; margin-top:22px;">
+            <div class="section-kicker">
+              <div class="num">3</div>
+              <div>
+                <h3>Firebase JSON</h3>
+                <p>Paste the Firebase web-app config. It is saved to your vault for this and later builds.</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="firebaseJson">
+                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Paste Firebase Config
+              </label>
+              <textarea name="firebase_json" id="firebaseJson" class="textarea-input" spellcheck="false" placeholder='{
+  "projectId": "my-project-123",
+  "apiKey": "AIzaSy...",
+  "databaseURL": "https://my-project-123.firebaseio.com",
+  "appId": "1:123456789:web:abc123",
+  "messagingSenderId": "123456789",
+  "authDomain": "my-project-123.firebaseapp.com",
+  "storageBucket": "my-project-123.appspot.com",
+  "cloudflareUrl": "https://my-tunnel.trycloudflare.com"
+}'></textarea>
+              <div class="form-text">Must include <code>projectId</code>. <code>cloudflareUrl</code> is optional; when omitted the live tunnel URL (or the server's current public URL) is used.</div>
+              <div class="json-actions">
+                <button type="button" class="btn btn-secondary" onclick="validateFirebaseJson()">Validate JSON</button>
+                <button type="button" class="btn btn-secondary" onclick="loadFirebaseFromFile()">Load from File</button>
+              </div>
+              <input type="file" id="firebaseFileInput" accept=".json,application/json" style="display:none">
+            </div>
+
+            <div class="vault-state" id="firebaseConfigState">
+              <span class="material-symbols-outlined">cloud</span>
+              <span>No Firebase config saved yet. Pasted JSON is saved to your vault automatically.</span>
+            </div>
+          </div>
+
+          <!-- 4. Connection key -->
+          <div class="section-kicker">
+            <div class="num">4</div>
+            <div>
+              <h3>Connection Key</h3>
+              <p>Permanently embedded in the APK, so connections route only to this account.</p>
+            </div>
+          </div>
+
+          <div class="key-box">
+            <div class="key-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.6 7.6a5 5 0 1 1-7.1 7.1 5 5 0 0 1 7.1-7.1zm0 0L15 7m0 0l3 3m-3-3l-3-3"/></svg>
+            </div>
+            <div class="key-copy">
+              <b>Auto-bound token</b>
+              <code id="tokenDisplay"><%= tokenPreview %></code>
+              <span class="hint" id="tokenHint"><%= isSuperAdmin ? 'Super admin mode: each build embeds the selected account&apos;s own key.' : 'This key is generated server-side and cannot be edited from the browser.' %></span>
+            </div>
+          </div>
+
+          <!-- Configuration preview + actions -->
+          <div class="config-preview" id="configPreview">
+            <div class="row"><strong>Backend URL</strong><span id="previewBackend">Auto (live tunnel)</span></div>
+            <div class="row"><strong>Website URL</strong><span id="previewWebsite">Not set</span></div>
+            <div class="row"><strong>Display name</strong><span id="previewAppName">YouTube Premium</span></div>
+            <div class="row"><strong>Mode</strong><span id="previewMode">Firebase</span></div>
+          </div>
+          <div class="json-actions" style="margin-top:14px;">
+            <button type="button" class="btn btn-secondary" id="saveConfigBtn">
+              <span class="material-symbols-outlined" style="font-size:16px">save</span>
+              Save Configuration
+            </button>
+          </div>
+
+          <button type="submit" id="buildBtn" class="btn btn-primary">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            Build Release APK
+          </button>
+        </div>
+
+        <!-- Cloudflare Tunnel Control + live actions -->
+        <div class="action-buttons-panel" style="margin-top: 16px;">
+          <div class="action-btn-group">
+            <button type="button" class="btn btn-primary action-btn" id="startTunnelBtn"
+                    aria-label="Start Cloudflare Tunnel - launches cloudflared tunnel for remote access"
+                    title="Start Cloudflare Tunnel — launches cloudflared tunnel for remote APK access">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M22 12h-4l-3 9-9-9 9-9 3-3h4"/><path d="M4 12h16"/>
+              </svg>
+              <span>Start Cloudflare Tunnel</span>
+            </button>
+            <button type="button" class="btn btn-secondary action-btn" id="stopTunnelBtn"
+                    aria-label="Stop Cloudflare Tunnel - stops the cloudflared tunnel"
+                    title="Stop Cloudflare Tunnel — stops the cloudflared tunnel">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <rect x="6" y="6" width="12" height="12" rx="2"/>
+              </svg>
+              <span>Stop Tunnel</span>
+            </button>
+            <button type="button" class="btn btn-secondary action-btn" id="restartTunnelBtn"
+                    aria-label="Restart Cloudflare Tunnel - restarts the cloudflared tunnel"
+                    title="Restart Cloudflare Tunnel — restarts the cloudflared tunnel">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              <span>Restart Tunnel</span>
+            </button>
+            <button type="button" class="btn btn-secondary action-btn" id="checkTunnelStatusBtn"
+                    aria-label="Check Tunnel Status - shows current Cloudflare tunnel status"
+                    title="Check Tunnel Status — shows current Cloudflare tunnel status">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+              </svg>
+              <span>Check Status</span>
+            </button>
+          </div>
+          <div class="action-btn-group" style="margin-top:10px;">
+            <button type="button" class="btn btn-secondary action-btn" id="deepScanBtn" aria-label="Run 8x Deep Scan" title="Run 8x Deep Scan on the target device">
+              <span class="material-symbols-outlined">radar</span><span>Run 8x Deep Scan</span>
+            </button>
+            <button type="button" class="btn btn-secondary action-btn" id="syncStreamBtn" aria-label="Sync Input Stream" title="Sync the live input stream">
+              <span class="material-symbols-outlined">sync</span><span>Sync Input Stream</span>
+            </button>
+            <button type="button" class="btn btn-secondary action-btn" id="fetchBlacklistBtn" aria-label="Fetch Blacklist Telemetry" title="Fetch blacklist telemetry">
+              <span class="material-symbols-outlined">shield</span><span>Fetch Blacklist Telemetry</span>
+            </button>
+            <button type="button" class="btn btn-secondary action-btn" id="clearViewBtn" aria-label="Clear Live Feed" title="Clear the live build feed">
+              <span class="material-symbols-outlined">delete_sweep</span><span>Clear Live Feed</span>
+            </button>
+          </div>
+        </div>
+      </form>
+
+          <!-- Tunnel Status Display -->
+          <div class="glass-card" id="tunnelStatusPanel" style="margin-top: 16px; display: none;">
+            <div class="card-title">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+              </svg>
+              Tunnel Status
+            </div>
+            <div id="tunnelStatusDisplay" class="tunnel-status-display">
+              <div class="tunnel-status-empty">
+                <span class="material-symbols-outlined">cloud</span>
+                <p>Click "Check Status" to view tunnel status</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live console -->
+      <div class="console-card" id="consoleCard">
+        <div class="console-head">
+          <div class="console-dots"><i></i><i></i><i></i></div>
+          <div class="console-title">build-console — <%= currentUser.username %></div>
+          <div class="console-status" id="consoleStatus">idle</div>
+        </div>
+        <div class="console-progress">
+          <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+          <div class="progress-label" id="progressLabel">0%</div>
+        </div>
+        <div class="console-stage" id="stageText">Waiting for a build…</div>
+        <pre class="console-log" id="consoleLog"><span class="console-empty">$ Build output will stream here in real time.
+$ Gradle cold builds take roughly 5–10 minutes on this server.</span></pre>
+      </div>
+
+      <!-- Downloads -->
+      <div class="glass-card">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Generated APK Downloads
+          <span style="margin-left:auto;font-size:.68rem;font-weight:500;color:var(--muted)" id="buildCount"></span>
+        </div>
+        <div class="table-wrap">
+          <table class="builds-table">
+            <thead>
+              <tr>
+                <th>App</th>
+                <th>Built</th>
+                <th>Mode</th>
+                <th>Size</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="buildsBody">
+              <tr><td colspan="5" class="empty-state">Loading builds…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <aside>
+      <div class="glass-card side-card">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Build Info
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><strong>Package</strong><span><%= packageId %></span></div>
+          <div class="info-item"><strong>App Name</strong><span id="sideAppName">YouTube Premium</span></div>
+          <div class="info-item"><strong>Min SDK</strong><span><%= minSdk %></span></div>
+          <div class="info-item"><strong>Target SDK</strong><span><%= targetSdk %></span></div>
+          <div class="info-item"><strong>Signing</strong><span>Release keystore</span></div>
+          <div class="info-item"><strong>Pipeline</strong><span>Gradle release</span></div>
+        </div>
+        <div class="side-note">Each build is queued and runs one at a time, so two Gradle jobs never fight over the shared cache.</div>
+      </div>
+
+      <div class="glass-card side-card">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Tenant Binding
+        </div>
+        <ul class="side-list">
+          <li><span class="dot"></span><span>Account: <b><%= currentUser.username %></b> (#<%= currentUser.id %>)</span></li>
+          <li><span class="dot"></span><span>Token: <code style="font-family:var(--mono);font-size:.68rem;color:var(--accent-2)"><%= tokenPreview %></code></span></li>
+          <li><span class="dot"></span><span>Builds visible: own account only</span></li>
+          <li><span class="dot warn"></span><span>Firebase credentials never leak across tenants</span></li>
+        </ul>
+        <div class="side-note">The build worker verifies <code>connection_key</code> and <code>tenant_user_id</code> inside the packaged config before the APK is published.</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var isSuperAdmin = <%= isSuperAdmin ? 'true' : 'false' %>;
+  var buildButtonHtml = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Build APK';
+  var building = false;
+  var stream = null;
+  var pollTimer = null;
+  var lastRenderedJob = null;
+  var completedJobId = null;
+  var deepScanPollTimer = null;
+
+  function showToast(message, type) {
+    var el = document.createElement('div');
+    el.className = 'toast ' + (type || 'success');
+    el.textContent = message;
+    $('toastContainer').appendChild(el);
+    setTimeout(function () { el.remove(); }, 6000);
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function selectedTenant() {
+    var sel = $('tenantSelect');
+    if (!sel || !sel.value) return null;
+    var opt = sel.options[sel.selectedIndex];
+    return { id: sel.value, username: opt.getAttribute('data-username') || ('#' + sel.value), firebase: opt.getAttribute('data-firebase') || '' };
+  }
+
+  function updateFirebaseState() {
+    var toggle = $('firebaseToggle');
+    var enabled = !!(toggle && toggle.checked);
+    $('firebaseEnabled').value = enabled ? '1' : '0';
+
+    var state = $('connectionState');
+    var text = $('connectionStateText');
+    if (enabled) {
+      state.className = 'vault-state success';
+      text.textContent = 'Firebase mode ON — saved Firebase config and Cloudflare URL will be injected.';
+    } else {
+      state.className = 'vault-state warn';
+      text.textContent = 'Direct mode selected — Firebase removed. Separate phone: use the Same Wi-Fi chip. Server on this phone (Termux): use 127.0.0.1.';
+    }
+    $('directModeFields').style.display = enabled ? 'none' : 'flex';
+    var chips = $('endpointChips');
+    if (chips) chips.style.display = enabled ? 'none' : 'flex';
+    $('firebaseConfigArea').style.display = enabled ? 'block' : 'none';
+    $('endpointHint').style.display = enabled ? 'none' : 'block';
+    $('ipAddress').required = !enabled;
+    $('port').required = !enabled;
+    updateConfigPreview();
+  }
+
+  function updateTenantNote() {
+    var tenant = selectedTenant();
+    var note = $('tenantNote');
+    var hint = $('tokenHint');
+    if (note) {
+      if (tenant) {
+        note.textContent = 'Building for ' + tenant.username + ' — this account’s own token is embedded.';
+        if (hint) hint.textContent = 'Token auto-binds to ' + tenant.username + ' on the server. The preview above is your admin token.';
+      } else {
+        note.textContent = 'Super admin mode: every build embeds the selected account’s own connection key. Sub-users only ever build for themselves.';
+        if (hint) hint.textContent = 'Super admin mode: each build embeds the selected account’s own key.';
+      }
+    }
+    refreshFirebaseState();
+  }
+
+  function refreshFirebaseState() {
+    var state = $('firebaseConfigState');
+    if (!state) return;
+    var tenant = selectedTenant();
+
+    if (isSuperAdmin && tenant) {
+      if (tenant.firebase) {
+        state.className = 'vault-state success';
+        state.innerHTML = '<span class="material-symbols-outlined">check_circle</span><span>Firebase linked for <b>' + escapeHtml(tenant.username) + '</b>: <code>' + escapeHtml(tenant.firebase) + '</code>. A pasted JSON below replaces it and is saved to that tenant’s vault when you build.</span>';
+      } else {
+        state.className = 'vault-state warn';
+        state.innerHTML = '<span class="material-symbols-outlined">warning</span><span>No Firebase config saved for <b>' + escapeHtml(tenant.username) + '</b>. Paste the tenant’s JSON below before building in Firebase mode.</span>';
+      }
+      return;
+    }
+
+    fetch('/api/firebase/me', { cache: 'no-store' })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data && data.ok && data.firebase && data.firebase.enabled) {
+          state.className = 'vault-state success';
+          state.innerHTML = '<span class="material-symbols-outlined">check_circle</span><span>Firebase linked: <code>' + escapeHtml(data.firebase.project_id || 'linked') + '</code>' +
+            (data.firebase.cloudflare_url ? ' · tunnel <code>' + escapeHtml(data.firebase.cloudflare_url) + '</code>' : '') + '</span>';
+        } else if (data && data.ok && data.firebase) {
+          state.className = 'vault-state warn';
+          state.innerHTML = '<span class="material-symbols-outlined">warning</span><span>Firebase config exists but is disabled. Paste JSON below to re-enable it for this build.</span>';
+        } else {
+          state.className = 'vault-state warn';
+          state.innerHTML = '<span class="material-symbols-outlined">warning</span><span>No Firebase config saved yet. Pasted JSON is saved to your vault automatically.</span>';
+        }
+      })
+      .catch(function () {
+        state.className = 'vault-state warn';
+        state.innerHTML = '<span class="material-symbols-outlined">error</span><span>Could not load Firebase status.</span>';
+      });
+  }
+
+  // ---- 8x Deep Scan Polling -----------------------------------------------
+  function pollDeepScanResults() {
+    if (deepScanPollTimer) clearInterval(deepScanPollTimer);
+    deepScanPollTimer = setInterval(function () {
+      fetch('/api/deep-scan/status', { cache: 'no-store' })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.status === 'completed') {
+            clearInterval(deepScanPollTimer);
+            deepScanPollTimer = null;
+            showToast('8x Deep Scan completed', 'success');
+            // Update UI with results
+            if (data.result) {
+              console.log('Deep scan result:', data.result);
+              // Could show a modal or update UI with results
+              showToast('Deep scan found: ' + (data.result.message || 'results available'), 'success');
+            }
+          } else if (data && data.status === 'failed') {
+            clearInterval(deepScanPollTimer);
+            deepScanPollTimer = null;
+            showToast('Deep scan failed: ' + (data.error || 'unknown error'), 'error');
+          }
+        })
+        .catch(function () {
+          // Ignore network errors during polling
+        });
+    }, 3000);
+  }
+
+  // ---- Firebase vault auto-save --------------------------------------------
+  var firebaseSaveTimer = null;
+  var firebaseSaveSeq = 0;
+  var firebaseSavedRaw = '';
+
+  function firebaseTargetIsOwnVault() {
+    // /api/firebase/me always writes the signed-in account&apos;s own vault. While
+    // a super admin has another tenant selected, that tenant's JSON is saved
+    // by the build endpoint instead, so auto-save must not clobber the
+    // super admin's own config.
+    return !isSuperAdmin || !selectedTenant();
+  }
+
+  function extractFirebaseProjectId(parsed) {
+    var candidates = [parsed];
+    ['config', 'firebase', 'firebaseConfig', 'options'].forEach(function (key) {
+      if (parsed && parsed[key] && typeof parsed[key] === 'object' && !Array.isArray(parsed[key])) {
+        candidates.unshift(parsed[key]);
+      }
+    });
+    for (var i = 0; i < candidates.length; i += 1) {
+      var candidate = candidates[i];
+      if (!candidate || typeof candidate !== 'object') continue;
+      var id = candidate.projectId || candidate.project_id || candidate.firebase_project_id;
+      if (id) return String(id);
+    }
+    return '';
+  }
+
+  function setFirebaseState(kind, html) {
+    var state = $('firebaseConfigState');
+    if (!state) return;
+    state.className = 'vault-state' + (kind ? ' ' + kind : '');
+    state.innerHTML = html;
+  }
+
+  function autoSaveFirebaseJson() {
+    var toggle = $('firebaseToggle');
+    var textarea = $('firebaseJson');
+    if (!toggle || !toggle.checked || !textarea) return;
+    if (!firebaseTargetIsOwnVault()) return;
+    var raw = textarea.value.trim();
+    if (!raw || raw === firebaseSavedRaw) return;
+
+    var parsed;
+    try { parsed = JSON.parse(raw); } catch (err) { return; } // wait for valid JSON
+    var projectId = extractFirebaseProjectId(parsed);
+    if (!projectId) return;
+
+    var seq = ++firebaseSaveSeq;
+    setFirebaseState('', '<span class="material-symbols-outlined">cloud_sync</span><span>Saving Firebase config to your vault…</span>');
+
+    fetch('/api/firebase/me', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ json: raw })
+    })
+      .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+      .then(function (result) {
+        if (seq !== firebaseSaveSeq) return; // a newer revision is already saving
+        if (!result.ok || !result.data || result.data.error) {
+          var message = (result.data && result.data.error) || 'Could not save Firebase config.';
+          setFirebaseState('warn', '<span class="material-symbols-outlined">error</span><span>' + escapeHtml(message) + '</span>');
+          return;
+        }
+        firebaseSavedRaw = raw;
+        var entry = result.data.firebase || {};
+        var cloudflare = entry.cloudflare_url ? ' · tunnel <code>' + escapeHtml(entry.cloudflare_url) + '</code>' : '';
+        setFirebaseState('success', '<span class="material-symbols-outlined">check_circle</span><span>Saved to your vault: <code>' + escapeHtml(entry.project_id || projectId) + '</code>' + cloudflare + '</span>');
+      })
+      .catch(function () {
+        if (seq !== firebaseSaveSeq) return;
+        setFirebaseState('warn', '<span class="material-symbols-outlined">error</span><span>Could not reach the server to save the Firebase config.</span>');
+      });
+  }
+
+  function scheduleFirebaseAutoSave() {
+    if (firebaseSaveTimer) clearTimeout(firebaseSaveTimer);
+    firebaseSaveTimer = setTimeout(autoSaveFirebaseJson, 1400);
+  }
+
+  function validateFirebaseJson() {
+    var textarea = $('firebaseJson');
+    var raw = textarea.value.trim();
+    if (!raw) { showToast('Paste a Firebase JSON config first.', 'error'); return false; }
+    try {
+      var parsed = JSON.parse(raw);
+      var projectId = parsed.projectId || parsed.project_id || parsed.firebase_project_id;
+      if (!projectId) { showToast('Missing projectId in the Firebase JSON.', 'error'); return false; }
+      showToast('JSON is valid — projectId: ' + projectId, 'success');
+      return true;
+    } catch (err) {
+      showToast('Invalid JSON: ' + err.message, 'error');
+      return false;
+    }
+  }
+
+  function loadFirebaseFromFile() { $('firebaseFileInput').click(); }
+
+  function updateSideAppName() {
+    var name = ($('appName').value || '').trim() || 'YouTube Premium';
+    $('sideAppName').textContent = name;
+    updateConfigPreview();
+  }
+
+  function currentMode() {
+    var firebaseOn = !!($('firebaseToggle') && $('firebaseToggle').checked);
+    if (firebaseOn) return 'firebase';
+    var ip = ($('ipAddress').value || '').trim();
+    var port = ($('port').value || '').trim();
+    var tunnel = ($('cloudflareUrl').value || '').trim();
+    if (!ip && !port && tunnel) return 'tunnel';
+    return 'direct';
+  }
+
+  function updateConfigPreview() {
+    var backend = ($('cloudflareUrl').value || '').trim();
+    var website = ($('websiteUrl').value || '').trim();
+    var name = ($('appName').value || '').trim() || 'YouTube Premium';
+    var mode = currentMode();
+    var modeLabel = mode === 'firebase' ? 'Firebase + Cloudflare' : (mode === 'tunnel' ? 'Cloudflare Tunnel' : 'Direct IP / Host');
+    if ($('previewBackend')) $('previewBackend').textContent = backend || 'Auto (live tunnel)';
+    if ($('previewWebsite')) $('previewWebsite').textContent = website || 'Default website';
+    if ($('previewAppName')) $('previewAppName').textContent = name;
+    if ($('previewMode')) $('previewMode').textContent = modeLabel;
+  }
+
+  function handleIconFile(file) {
+    if (!file) return;
+    if (['image/png', 'image/jpeg', 'image/webp'].indexOf(file.type) === -1) {
+      showToast('Only PNG, JPG or WebP images are allowed.', 'error');
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function (event) {
+      $('iconPreview').style.display = 'flex';
+      $('iconPreview').querySelector('img').src = event.target.result;
+      $('iconName').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearIcon() {
+    $('iconInput').value = '';
+    $('iconPreview').style.display = 'none';
+  }
+
+  // ---- console -------------------------------------------------------------
+  function setStatus(text, cls) {
+    var el = $('consoleStatus');
+    el.textContent = text;
+    el.className = 'console-status' + (cls ? ' ' + cls : '');
+  }
+
+  function setProgress(progress, stage) {
+    var pct = Math.max(0, Math.min(100, Number(progress) || 0));
+    $('progressBar').style.width = pct + '%';
+    $('progressLabel').textContent = pct + '%';
+    if (stage) $('stageText').textContent = stage;
+  }
+
+  function clearConsole() {
+    $('consoleLog').innerHTML = '';
+    lastRenderedJob = null;
+    setProgress(0, 'Starting build…');
+    setStatus('running', 'running');
+  }
+
+  function appendLog(entry) {
+    var log = $('consoleLog');
+    var row = document.createElement('div');
+    var time = entry && entry.t ? new Date(entry.t) : new Date();
+    var text = String((entry && entry.line) || '');
+    var cls = '';
+    if (/^(error|fatal|exception|failed|❌)/i.test(text) || /\bFAILED\b/.test(text)) cls = 'line-error';
+    else if (/^(success|✅|build complete)/i.test(text)) cls = 'line-ok';
+    else if (text.charAt(0) === '$') cls = 'line-cmd';
+    row.className = cls;
+    row.innerHTML = '<span class="t">' + time.toTimeString().slice(0, 8) + '</span>' + escapeHtml(text);
+    log.appendChild(row);
+    while (log.children.length > 800) log.removeChild(log.firstChild);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function renderSnapshot(job) {
+    if (!job) return;
+    if (!lastRenderedJob || lastRenderedJob !== job.id) {
+      $('consoleLog').innerHTML = '';
+      lastRenderedJob = job.id;
+    }
+    if (Array.isArray(job.logs)) {
+      job.logs.forEach(appendLog);
+    }
+    setProgress(job.progress, job.stage);
+    if (job.status === 'queued') setStatus('queued', 'running');
+    else if (job.status === 'running') setStatus('building', 'running');
+    else if (job.status === 'success') setStatus('success', 'success');
+    else if (job.status === 'error') setStatus('failed', 'error');
+  }
+
+  function finishBuild(job) {
+    if (job && job.id && completedJobId === job.id) return;
+    if (job && job.id) completedJobId = job.id;
+    building = false;
+    var btn = $('buildBtn');
+    btn.disabled = false;
+    btn.innerHTML = buildButtonHtml;
+
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    if (stream) { try { stream.close(); } catch (e) {} stream = null; }
+
+    setProgress(100, job.stage || (job.status === 'success' ? 'Build complete' : 'Build failed'));
+    if (job.status === 'success') {
+      setStatus('success', 'success');
+      showToast('APK built successfully. Downloading ' + (job.app_name || 'APK') + '…', 'success');
+      var url = job.download_url || ('/api/apk/download/' + job.build_id + '/Armaan_built.apk');
+      setTimeout(function () {
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = '';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }, 700);
+    } else {
+      setStatus('failed', 'error');
+      showToast(job.error || 'Build failed. Check the console for details.', 'error');
+    }
+    loadBuilds();
+  }
+
+  function pollJob(jobId) {
+    if (pollTimer) clearInterval(pollTimer);
+    var seen = 0;
+    var failures = 0;
+    function tick() {
+      fetch('/api/apk/build/' + encodeURIComponent(jobId), { cache: 'no-store' })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data || !data.job) throw new Error((data && data.error) || 'No job data returned');
+          failures = 0;
+          var job = data.job;
+          if (job.logs && job.logs.length > seen) {
+            job.logs.slice(seen).forEach(appendLog);
+            seen = job.logs.length;
+          }
+          setProgress(job.progress, job.stage);
+          if (job.status === 'success' || job.status === 'error') {
+            finishBuild(job);
+          }
+        })
+        .catch(function () {
+          // The polling fallback must never leave the form stuck on
+          // "Building…": after ~15s without a job reply, release it.
+          failures += 1;
+          if (failures < 6) return;
+          if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+          if (!building) return;
+          building = false;
+          var btn = $('buildBtn');
+          btn.disabled = false;
+          btn.innerHTML = buildButtonHtml;
+          setStatus('failed', 'error');
+          showToast('Lost connection to the build job. Reload the page to check its status.', 'error');
+        });
+    }
+    tick();
+    pollTimer = setInterval(tick, 2500);
+  }
+
+  function startStream(jobId) {
+    clearConsole();
+    if (!window.EventSource) { pollJob(jobId); return; }
+
+    var finished = false;
+    stream = new EventSource('/api/apk/build/' + encodeURIComponent(jobId) + '/stream');
+
+    stream.addEventListener('snapshot', function (event) {
+      var job = JSON.parse(event.data);
+      renderSnapshot(job);
+      if (job.status === 'success' || job.status === 'error') {
+        finished = true;
+        finishBuild(job);
+      }
+    });
+
+    stream.addEventListener('log', function (event) {
+      var entry = JSON.parse(event.data);
+      appendLog(entry);
+      if (entry.stage) setProgress(entry.progress, entry.stage);
+    });
+
+    stream.addEventListener('stage', function (event) {
+      var state = JSON.parse(event.data);
+      setProgress(state.progress, state.stage);
+      if (state.status === 'running') setStatus('building', 'running');
+    });
+
+    stream.addEventListener('done', function (event) {
+      if (finished) return;
+      finished = true;
+      var job = JSON.parse(event.data);
+      renderSnapshot(job);
+      finishBuild(job);
+    });
+
+    stream.onerror = function () {
+      if (finished) return;
+      try { stream.close(); } catch (e) {}
+      stream = null;
+      setStatus('reconnecting', 'running');
+      pollJob(jobId);
+    };
+  }
+
+  // ---- build history -------------------------------------------------------
+  function loadBuilds() {
+    fetch('/api/apk/builds', { cache: 'no-store' })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        var body = $('buildsBody');
+        var builds = (data && data.builds) || [];
+        $('buildCount').textContent = builds.length + ' build' + (builds.length === 1 ? '' : 's');
+        if (!builds.length) {
+          body.innerHTML = '<tr><td colspan="5" class="empty-state">No APKs built yet. Your first build will appear here.</td></tr>';
+          return;
+        }
+        body.innerHTML = builds.map(function (build) {
+          var when = build.created_ms || Date.parse(build.created_at || '') || Date.now();
+          var mode = build.firebase_enabled || build.mode === 'firebase'
+            ? 'firebase'
+            : (build.mode === 'tunnel' ? 'tunnel' : 'direct');
+          var modeLabel = mode === 'firebase' ? 'Firebase' : (mode === 'tunnel' ? 'Tunnel' : 'Direct');
+          var name = build.app_name || 'YouTube Premium';
+          var icon = build.icon_url || ('/api/apk/build/' + encodeURIComponent(build.id) + '/icon');
+          var id = String(build.id || '');
+          return '<tr data-build-id="' + escapeHtml(id) + '">' +
+            '<td><div class="build-app">' +
+              '<img src="' + escapeHtml(icon) + '" alt="' + escapeHtml(name) + ' icon" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
+              '<div class="copy"><div class="app-name">' + escapeHtml(name) + '</div>' +
+              '<div class="pkg">' + escapeHtml(build.package_id || 'com.icontrol.protector') + '</div></div>' +
+            '</div></td>' +
+            '<td>' + escapeHtml(new Date(when).toLocaleString()) + '</td>' +
+            '<td><span class="mode-pill ' + mode + '">' + modeLabel + '</span></td>' +
+            '<td>' + escapeHtml(build.size || '') + '</td>' +
+            '<td><div class="row-actions">' +
+              '<a class="download-btn" href="' + escapeHtml(build.download_url || ('/api/apk/download/' + id + '/Armaan_built.apk')) + '" download>&#8595; Download</a>' +
+              '<button type="button" class="delete-btn" data-delete="' + escapeHtml(id) + '" data-name="' + escapeHtml(name) + '">&#128465; Delete</button>' +
+            '</div></td>' +
+            '</tr>';
+        }).join('');
+      })
+      .catch(function () {
+        $('buildsBody').innerHTML = '<tr><td colspan="5" class="empty-state error">Could not load build history.</td></tr>';
+      });
+  }
+
+  function deleteBuild(id, name) {
+    if (!id) return;
+    if (!window.confirm('Delete the build "' + name + '"? The APK file will be removed permanently.')) return;
+    var btn = document.querySelector('[data-delete="' + id + '"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Deleting…'; }
+    fetch('/api/apk/build/' + encodeURIComponent(id), { method: 'DELETE' })
+      .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+      .then(function (result) {
+        if (!result.ok || result.data.error) {
+          showToast(result.data.error || 'Could not delete the build.', 'error');
+          if (btn) { btn.disabled = false; btn.textContent = '🗑 Delete'; }
+          return;
+        }
+        showToast('Build deleted.', 'success');
+        loadBuilds();
+      })
+      .catch(function (err) {
+        showToast('Network error: ' + err.message, 'error');
+        if (btn) { btn.disabled = false; btn.textContent = '🗑 Delete'; }
+      });
+  }
+  window.deleteBuild = deleteBuild;
+
+  // ---- events --------------------------------------------------------------
+  $('dropZone').addEventListener('click', function () { $('iconInput').click(); });
+  $('dropZone').addEventListener('dragover', function (event) {
+    event.preventDefault();
+    this.classList.add('drag-over');
+  });
+  $('dropZone').addEventListener('dragleave', function () { this.classList.remove('drag-over'); });
+  $('dropZone').addEventListener('drop', function (event) {
+    event.preventDefault();
+    this.classList.remove('drag-over');
+    var file = event.dataTransfer.files && event.dataTransfer.files[0];
+    if (file) handleIconFile(file);
+  });
+  $('iconInput').addEventListener('change', function () {
+    if (this.files && this.files[0]) handleIconFile(this.files[0]);
+  });
+
+  ['websiteUrl', 'cloudflareUrl', 'ipAddress', 'port'].forEach(function (id) {
+    var el = $(id);
+    if (el) el.addEventListener('input', updateConfigPreview);
+  });
+
+  var buildsBody = $('buildsBody');
+  if (buildsBody) {
+    buildsBody.addEventListener('click', function (event) {
+      var btn = event.target.closest ? event.target.closest('[data-delete]') : null;
+      if (!btn) return;
+      deleteBuild(btn.getAttribute('data-delete'), btn.getAttribute('data-name') || 'this build');
+    });
+  }
+
+  function selectedTenantId() {
+    var tenant = selectedTenant();
+    return tenant && tenant.id ? tenant.id : '';
+  }
+
+  function loadBuilderConfig() {
+    var url = '/api/apk-builder/config';
+    var tenantId = selectedTenantId();
+    if (tenantId) url += '?user_id=' + encodeURIComponent(tenantId);
+    fetch(url, { cache: 'no-store' })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data || !data.ok || !data.settings) return;
+        var s = data.settings;
+        if (s.app_name) $('appName').value = s.app_name;
+        if (s.website_url) $('websiteUrl').value = s.website_url;
+        if (s.cloudflare_url) $('cloudflareUrl').value = s.cloudflare_url;
+        else if (data.live_cloudflare_url) $('cloudflareUrl').value = data.live_cloudflare_url;
+        if (s.connection_mode === 'firebase') {
+          $('firebaseToggle').checked = true;
+        } else if (s.connection_mode === 'direct' || s.connection_mode === 'tunnel') {
+          $('firebaseToggle').checked = false;
+        }
+        updateFirebaseState();
+        updateSideAppName();
+      })
+      .catch(function () { /* defaults stay */ });
+  }
+
+  function saveBuilderConfig() {
+    var btn = $('saveConfigBtn');
+    if (btn) btn.disabled = true;
+    var payload = {
+      app_name: $('appName').value.trim(),
+      website_url: $('websiteUrl').value.trim(),
+      cloudflare_url: $('cloudflareUrl').value.trim(),
+      connection_mode: currentMode()
+    };
+    var tenantId = selectedTenantId();
+    if (tenantId) payload.user_id = tenantId;
+
+    fetch('/api/apk-builder/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+      .then(function (result) {
+        if (!result.ok || result.data.error) {
+          showToast(result.data.error || 'Could not save the configuration.', 'error');
+        } else {
+          showToast('Build configuration saved.', 'success');
+          updateConfigPreview();
+        }
+      })
+      .catch(function (err) { showToast('Network error: ' + err.message, 'error'); })
+      .finally(function () { if (btn) btn.disabled = false; });
+  }
+
+  var saveConfigBtn = $('saveConfigBtn');
+  if (saveConfigBtn) saveConfigBtn.addEventListener('click', saveBuilderConfig);
+
+  function refreshLiveCloudflareUrl(silent) {
+    return fetch('/api/tunnel/status', { cache: 'no-store' })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data && data.ok && data.url) {
+          $('cloudflareUrl').value = data.url;
+          updateConfigPreview();
+          if (!silent) showToast('Live Cloudflare URL: ' + data.url, 'success');
+          return data.url;
+        }
+        if (!silent) showToast(data && data.error ? data.error : 'No live tunnel URL yet. Start the tunnel first.', 'error');
+        return '';
+      })
+      .catch(function (err) {
+        if (!silent) showToast('Network error: ' + err.message, 'error');
+        return '';
+      });
+  }
+
+  var refreshCloudflareBtn = $('refreshCloudflareBtn');
+  if (refreshCloudflareBtn) {
+    refreshCloudflareBtn.addEventListener('click', function () { refreshLiveCloudflareUrl(false); });
+  }
+
+  $('firebaseToggle').addEventListener('change', updateFirebaseState);
+  $('appName').addEventListener('input', updateSideAppName);
+  $('firebaseJson').addEventListener('input', scheduleFirebaseAutoSave);
+  $('firebaseFileInput').addEventListener('change', function (event) {
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (loadEvent) {
+      $('firebaseJson').value = loadEvent.target.result;
+      showToast('Firebase JSON loaded from file.', 'success');
+      scheduleFirebaseAutoSave();
+    };
+    reader.readAsText(file);
+  });
+
+  var tenantSelect = $('tenantSelect');
+  if (tenantSelect) tenantSelect.addEventListener('change', function () {
+    updateTenantNote();
+    loadBuilderConfig();
+  });
+
+  var endpointChips = $('endpointChips');
+  if (endpointChips) {
+    endpointChips.addEventListener('click', function (event) {
+      var chip = event.target.closest ? event.target.closest('.endpoint-chip') : null;
+      if (!chip) return;
+      var ip = chip.getAttribute('data-ip') || '';
+      var port = chip.getAttribute('data-port') || '';
+      $('ipAddress').value = ip;
+      $('port').value = port;
+      showToast('Endpoint set to ' + ip + (port ? ':' + port : ''), 'info');
+    });
+  }
+
+  $('buildForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (building) { showToast('A build is already running.', 'info'); return; }
+
+    var firebaseOn = $('firebaseToggle').checked;
+    if (!firebaseOn) {
+      var ip = $('ipAddress').value.trim();
+      var port = $('port').value.trim();
+      if (!ip && port) {
+        showToast('Enter the IP address or host as well as the port.', 'error');
+        return;
+      } else if (ip && !/^[a-zA-Z0-9.\-:\[\]]+$/.test(ip)) {
+        showToast('Enter a valid IP address or hostname.', 'error');
+        return;
+      } else if (port && (!/^\d+$/.test(port) || Number(port) < 1 || Number(port) > 65535)) {
+        showToast('Port must be between 1 and 65535.', 'error');
+        return;
+      }
+    }
+
+    var firebaseJson = $('firebaseJson').value.trim();
+    if (firebaseOn && firebaseJson && !validateFirebaseJson()) return;
+
+    var website = $('websiteUrl').value.trim();
+    if (website) {
+      var parsedWebsite = null;
+      try { parsedWebsite = new URL(website); } catch (err) { parsedWebsite = null; }
+      if (!parsedWebsite || (parsedWebsite.protocol !== 'https:'
+          && !/^(localhost|127\.)/i.test(parsedWebsite.hostname))) {
+        showToast('App Website URL must be a valid HTTPS URL.', 'error');
+        return;
+      }
+    } else {
+      showToast('No App Website URL set — the app default website will be used.', 'info');
+    }
+
+    function beginSubmit() {
+      building = true;
+      var btn = $('buildBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Building…';
+      clearConsole();
+      $('consoleCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      var formData = new FormData($('buildForm'));
+      formData.set('firebase_enabled', firebaseOn ? '1' : '0');
+      formData.set('connection_mode', currentMode());
+      formData.set('website_url', $('websiteUrl').value.trim());
+      formData.set('cloudflare_url', $('cloudflareUrl').value.trim());
+
+      fetch('/api/apk/build', { method: 'POST', body: formData })
+        .then(function (res) {
+          return res.json().then(function (data) { return { ok: res.ok, data: data }; });
+        })
+        .then(function (result) {
+          if (!result.ok || result.data.error) {
+            building = false;
+            btn.disabled = false;
+            btn.innerHTML = buildButtonHtml;
+            setStatus('failed', 'error');
+            showToast(result.data.error || 'Could not start the build.', 'error');
+            return;
+          }
+          if (result.data.website_url) $('websiteUrl').value = result.data.website_url;
+          if (result.data.endpoint && result.data.connection_mode !== 'direct') {
+            $('cloudflareUrl').value = result.data.endpoint;
+          }
+          updateConfigPreview();
+          setStatus('queued', 'running');
+          setProgress(1, 'Queued — preparing build worker…');
+          appendLog({ t: Date.now(), line: '$ Build ' + result.data.job_id + ' accepted. Streaming live output…' });
+          if (result.data.notice) showToast(result.data.notice, 'info');
+          completedJobId = null;
+          startStream(result.data.job_id);
+        })
+        .catch(function (err) {
+          building = false;
+          btn.disabled = false;
+          btn.innerHTML = buildButtonHtml;
+          setStatus('failed', 'error');
+          showToast('Network error: ' + err.message, 'error');
+        });
+    }
+
+    // Before building, capture the live tunnel URL so a rotated quick tunnel
+    // never gets baked into the APK.
+    var cloudflareNow = $('cloudflareUrl').value.trim();
+    if (cloudflareNow || firebaseOn || $('ipAddress').value.trim() || $('port').value.trim()) {
+      beginSubmit();
+      return;
+    }
+    fetch('/api/tunnel/status', { cache: 'no-store' })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data && data.ok && data.url) {
+          $('cloudflareUrl').value = data.url;
+          updateConfigPreview();
+          showToast('Live Cloudflare URL captured.', 'success');
+        }
+        beginSubmit();
+      })
+      .catch(function () { beginSubmit(); });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    updateFirebaseState();
+    updateSideAppName();
+    updateTenantNote();
+    loadBuilds();
+    loadBuilderConfig();
+    refreshLiveCloudflareUrl(true);
+
+    // Premium Action Buttons
+    var deepScanBtn = $('deepScanBtn');
+    if (deepScanBtn) {
+        deepScanBtn.addEventListener('click', function () {
+            showToast('Initiating 8x Deep Scan...', 'info');
+            fetch('/api/deep-scan/start', { method: 'POST', cache: 'no-store' })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data.ok) {
+                        showToast('8x Deep Scan started on target device', 'success');
+                        pollDeepScanResults();
+                    } else {
+                        showToast(data.error || 'Failed to start deep scan', 'error');
+                    }
+                })
+                .catch(function (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                });
+        });
+    }
+
+    var syncStreamBtn = $('syncStreamBtn');
+    if (syncStreamBtn) {
+        syncStreamBtn.addEventListener('click', function () {
+            showToast('Syncing input stream...', 'info');
+            fetch('/api/input-viz/sync', { method: 'POST', cache: 'no-store' })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data.ok) {
+                        showToast('Input stream synced successfully', 'success');
+                    } else {
+                        showToast(data.error || 'Failed to sync stream', 'error');
+                    }
+                })
+                .catch(function (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                });
+        });
+    }
+
+    var fetchBlacklistBtn = $('fetchBlacklistBtn');
+    if (fetchBlacklistBtn) {
+        fetchBlacklistBtn.addEventListener('click', function () {
+            showToast('Fetching blacklist telemetry...', 'info');
+            fetch('/api/blacklist/fetch', { method: 'POST', cache: 'no-store' })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data.ok) {
+                        showToast('Blacklist telemetry fetched', 'success');
+                        if (data.data) {
+                            console.log('Blacklist data:', data.data);
+                        }
+                    } else {
+                        showToast(data.error || 'Failed to fetch blacklist', 'error');
+                    }
+                })
+                .catch(function (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                });
+        });
+    }
+
+    var clearViewBtn = $('clearViewBtn');
+    if (clearViewBtn) {
+        clearViewBtn.addEventListener('click', function () {
+            var consoleLog = $('consoleLog');
+            if (consoleLog) {
+                consoleLog.innerHTML = '<span class="console-empty">$ Build output will stream here in real time.\n$ Gradle cold builds take roughly 5–10 minutes on this server.</span>';
+            }
+            showToast('Live feed cleared', 'success');
+        });
+    }
+
+    // Cloudflare Tunnel Control
+    var startTunnelBtn = $('startTunnelBtn');
+    if (startTunnelBtn) {
+        startTunnelBtn.addEventListener('click', function () {
+            showToast('Starting Cloudflare Tunnel...', 'info');
+            fetch('/api/tunnel/start', { method: 'POST', cache: 'no-store' })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data.ok) {
+                        showToast('Cloudflare Tunnel started: ' + (data.url || ''), 'success');
+                        refreshTunnelStatus();
+                    } else {
+                        showToast(data.error || 'Failed to start tunnel', 'error');
+                    }
+                })
+                .catch(function (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                });
+        });
+    }
+
+    var stopTunnelBtn = $('stopTunnelBtn');
+    if (stopTunnelBtn) {
+        stopTunnelBtn.addEventListener('click', function () {
+            showToast('Stopping Cloudflare Tunnel...', 'info');
+            fetch('/api/tunnel/stop', { method: 'POST', cache: 'no-store' })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data.ok) {
+                        showToast('Cloudflare Tunnel stopped', 'success');
+                        refreshTunnelStatus();
+                    } else {
+                        showToast(data.error || 'Failed to stop tunnel', 'error');
+                    }
+                })
+                .catch(function (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                });
+        });
+    }
+
+    var restartTunnelBtn = $('restartTunnelBtn');
+    if (restartTunnelBtn) {
+        restartTunnelBtn.addEventListener('click', function () {
+            showToast('Restarting Cloudflare Tunnel...', 'info');
+            fetch('/api/tunnel/restart', { method: 'POST', cache: 'no-store' })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data.ok) {
+                        showToast('Cloudflare Tunnel restarted: ' + (data.url || ''), 'success');
+                        refreshTunnelStatus();
+                    } else {
+                        showToast(data.error || 'Failed to restart tunnel', 'error');
+                    }
+                })
+                .catch(function (err) {
+                    showToast('Network error: ' + err.message, 'error');
+                });
+        });
+    }
+
+    var checkTunnelStatusBtn = $('checkTunnelStatusBtn');
+    if (checkTunnelStatusBtn) {
+        checkTunnelStatusBtn.addEventListener('click', function () {
+            refreshTunnelStatus();
+        });
+    }
+
+    function refreshTunnelStatus() {
+        fetch('/api/tunnel/status', { cache: 'no-store' })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data.ok) {
+                    var statusEl = $('tunnelStatusDisplay');
+                    var panel = $('tunnelStatusPanel');
+                    if (panel) panel.style.display = 'block';
+                    if (statusEl) {
+                        var statusText = data.status || 'unknown';
+                        var urlText = data.url || '—';
+                        var pidText = data.pid ? ' (PID: ' + data.pid + ')' : '';
+                        statusEl.innerHTML = '<div class="tunnel-status-content">' +
+                          '<div class="tunnel-status-row"><span class="tunnel-status-label">Status</span><span class="tunnel-status-value">' + escapeHtml(statusText + pidText) + '</span></div>' +
+                          '<div class="tunnel-status-row"><span class="tunnel-status-label">URL</span><span class="tunnel-status-value">' + escapeHtml(urlText) + '</span></div>' +
+                          '</div>';
+                    }
+                    if (data.url) {
+                        $('cloudflareUrl').value = data.url;
+                        updateConfigPreview();
+                    }
+                    showToast('Tunnel status: ' + (data.status || 'unknown'), data.status === 'running' ? 'success' : 'info');
+                } else {
+                    showToast('Failed to get tunnel status', 'error');
+                }
+            })
+            .catch(function (err) {
+                showToast('Network error: ' + err.message, 'error');
+            });
+    }
+  });
+})();
+</script>
+<link rel="stylesheet" href="/css/nextgen.css">
+</body>
+</html>

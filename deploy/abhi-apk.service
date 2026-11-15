@@ -1,0 +1,16 @@
+[Unit]
+Description=ABHI0.1 APK download server (3100)
+After=network.target abhi.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/abhi
+ExecStart=/usr/bin/node scripts/apk-dl-server.js
+Restart=always
+RestartSec=3
+Environment=APK_DL_PORT=3100
+StandardOutput=append:/var/log/abhi-apk.log
+StandardError=append:/var/log/abhi-apk.log
+
+[Install]
+WantedBy=multi-user.target

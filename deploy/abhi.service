@@ -1,0 +1,16 @@
+[Unit]
+Description=ABHI0.1 panel + device backend (3000 dashboard, 22222 apk/ws)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/abhi
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=3
+Environment=NODE_ENV=production
+StandardOutput=append:/var/log/abhi.log
+StandardError=append:/var/log/abhi.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060914">
+<meta name="csrf-token" content="<%= csrfToken %>">
+<title><%= targetUser.username %> · Devices · Armaan Admin</title>
+<link rel="stylesheet" href="/css/admin-premium.css">
+<script>
+  try {
+    var savedTheme = localStorage.getItem('armaan-theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.setAttribute('data-theme', savedTheme);
+  } catch (e) {}
+  window.__DEVICE_PAGE__ = <%- JSON.stringify({ csrf: csrfToken, userId: targetUser.id, user: targetUser, devices }).replace(/</g, '\\u003c') %>;
+</script>
+</head>
+<body>
+<div class="grid-lines" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">A</div>
+    <div>
+      <div class="brand-name">Armaan Control</div>
+      <div class="brand-sub">Tenant device drill-down</div>
+    </div>
+  </div>
+  <nav class="top-nav" aria-label="Navigation">
+    <a class="nav-link" href="/admin/users">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      <span>User Management</span>
+    </a>
+    <a class="nav-link" href="/admin">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+      <span>Admin Panel</span>
+    </a>
+    <button class="nav-link" id="themeBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      <span id="themeLabel">Light mode</span>
+    </button>
+    <a class="nav-link" href="/logout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+      <span>Logout</span>
+    </a>
+  </nav>
+</header>
+
+<main class="shell">
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="pulse"></span> Tenant device access</div>
+      <h1 id="pageTitle"><%= targetUser.username %> · Devices</h1>
+      <p id="pageSub">License <%= targetUser.license_key || '—' %> · <%= targetUser.expiry_label %></p>
+    </div>
+    <div class="hero-actions">
+      <button class="btn" id="apkBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V9a7 7 0 0 1 14 0v7"/><path d="M8 19h8"/><path d="M7 16h10"/></svg>
+        APK profile
+      </button>
+      <button class="btn btn-primary" id="refreshBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+        Refresh
+      </button>
+    </div>
+  </section>
+
+  <section class="stats">
+    <article class="stat">
+      <div class="stat-head"><span class="stat-label">Bound devices</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span></div>
+      <div class="stat-value" id="statTotal"><%= devices.length %></div>
+      <div class="stat-foot">Owned by this tenant</div>
+    </article>
+    <article class="stat">
+      <div class="stat-head"><span class="stat-label">Online now</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6"/><path d="M5 12a7 7 0 0 1 14 0"/><path d="M2 9a11 11 0 0 1 20 0"/></svg></span></div>
+      <div class="stat-value" id="statOnline"><%= devices.filter((d) => d.online).length %></div>
+      <div class="stat-foot"><span class="tiny-dot"></span> Live WebSocket presence</div>
+    </article>
+    <article class="stat">
+      <div class="stat-head"><span class="stat-label">Offline</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a11 11 0 0 1 20 0"/><path d="M5 12a7 7 0 0 1 10.7-5.8"/><path d="m2 2 20 20"/></svg></span></div>
+      <div class="stat-value" id="statOffline"><%= devices.filter((d) => !d.online).length %></div>
+      <div class="stat-foot">Will re-bind on reconnect</div>
+    </article>
+    <article class="stat">
+      <div class="stat-head"><span class="stat-label">Account</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span></div>
+      <div class="stat-value" id="statUser" style="font-size:20px;overflow:hidden;text-overflow:ellipsis"><%= targetUser.username %></div>
+      <div class="stat-foot" id="userStatus"><span class="badge <%= targetUser.status_class %>"><span class="dot"></span><%= targetUser.status_label %></span></div>
+    </article>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <div class="card-head">
+      <div>
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
+          Bound devices
+        </h2>
+        <p class="card-sub">Every device here is filtered by <span class="mono">WHERE user_id = <%= targetUser.id %></span> on the server.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-sm" id="copyLicenseKey" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy license key
+        </button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="deviceSearch" type="search" placeholder="Search device, model or OS..." autocomplete="off">
+      </div>
+      <span class="count-pill"><%= devices.length %> device<%= devices.length === 1 ? '' : 's' %></span>
+    </div>
+    <div class="table-wrap">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>Device</th>
+            <th>Model</th>
+            <th>Android</th>
+            <th>Status</th>
+            <th>Last seen</th>
+            <th style="text-align:right">Action</th>
+          </tr>
+        </thead>
+        <tbody id="devicesBody">
+          <% if (!devices.length) { %>
+            <tr><td colspan="6">
+              <div class="empty-state">
+                <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+                <h3>No device bound yet</h3>
+                <p>Install an APK carrying this user's license token. It will bind here automatically.</p>
+              </div>
+            </td></tr>
+          <% } %>
+          <% devices.forEach((device) => { %>
+            <tr data-device-key="<%= device.device_key %>">
+              <td>
+                <div class="user-cell">
+                  <div class="avatar" style="border-radius:10px">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
+                  </div>
+                  <div style="min-width:0">
+                    <div class="user-name mono" style="font-size:11.5px"><%= device.device_key %></div>
+                    <div class="user-meta">PID: <%= device.device_pid || '—' %></div>
+                  </div>
+                </div>
+              </td>
+              <td><%= device.model || 'Android device' %></td>
+              <td><%= device.os_version ? 'Android ' + device.os_version : 'Unknown' %></td>
+              <td><span class="badge <%= device.online ? 'active' : 'neutral' %>"><span class="dot"></span><%= device.online ? 'Online' : 'Offline' %></span></td>
+              <td><span class="muted" style="font-size:11px"><%= device.last_seen ? new Date(device.last_seen).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Never' %></span></td>
+              <td style="text-align:right">
+                <button class="btn btn-sm btn-primary" type="button" data-action="control" data-key="<%= device.device_key %>">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 3 14 9-14 9V3Z"/></svg>
+                  Control
+                </button>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="hint" style="margin-top:16px">Press <strong>Control</strong> to select a device and open the dashboard at <span class="mono">/</span>. The super admin session keeps global access; normal users only ever see their own devices.</p>
+</main>
+
+<div class="modal-backdrop" id="apkModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="apkTitle" style="width:min(620px,100%)">
+    <div class="modal-head">
+      <div class="modal-icon" style="background:var(--emerald-soft);color:var(--emerald)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V9a7 7 0 0 1 14 0v7"/><path d="M8 19h8"/><path d="M7 16h10"/></svg>
+      </div>
+      <div style="flex:1">
+        <h3 id="apkTitle">APK provisioning profile</h3>
+        <p>Per-user server URL and connection token.</p>
+      </div>
+      <button class="icon-btn" id="apkClose" type="button" title="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="apkBody"></div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+<script src="/js/admin-user-devices.js"></script>
+<link rel="stylesheet" href="/css/nextgen.css">
+</body>
+</html>

@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071018">
+<title>Armaan Admin</title>
+<style>
+:root{
+  --bg:#071018;--panel:#0d1a24;--panel2:#102430;--line:#1d3745;--text:#e7f3f7;
+  --muted:#8ba6b4;--brand:#43e0c0;--brand2:#7c9cff;--danger:#ff6b7a;--warn:#ffc857;
+  --ok:#43e0c0;--shadow:0 18px 50px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:radial-gradient(circle at 10% 0%,#123140 0,#071018 44%,#050b10 100%);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+a{color:var(--brand);text-decoration:none;word-break:break-all}
+button{font:inherit}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:1180px;margin:0 auto 16px}
+.brand{display:flex;align-items:center;gap:12px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 5px rgba(67,224,192,.12)}
+h1{font-size:20px;line-height:1.1;margin:0;letter-spacing:.2px}
+.sub{margin:5px 0 0;color:var(--muted);font-size:12px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.profile{display:flex;align-items:center;gap:9px;min-height:42px;padding:6px 10px 6px 6px;border:1px solid var(--line);background:rgba(13,26,36,.8);border-radius:12px;max-width:100%}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#04110f;background:linear-gradient(135deg,var(--brand),var(--brand2));flex:0 0 auto}
+.profile-meta{min-width:0;line-height:1.15}
+.profile-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:750}
+.profile-email{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+.profile-sub{font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+.btn.small{min-height:34px;padding:7px 10px;font-size:12px;border-radius:9px}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 13px;border-radius:10px;cursor:pointer;min-height:42px;font-weight:650;font-size:13px}
+.btn:hover{border-color:var(--brand);color:var(--brand)}
+.btn.primary{background:linear-gradient(135deg,rgba(67,224,192,.2),rgba(124,156,255,.16));border-color:rgba(67,224,192,.45);color:var(--brand)}
+.btn.danger{border-color:rgba(255,107,122,.35);color:var(--danger)}
+.btn.remove{background:linear-gradient(135deg,#ff5669,#c81e3a);border-color:#ff7a88;color:#fff;box-shadow:0 10px 26px rgba(200,30,58,.28)}
+.btn.remove:hover:not(:disabled){background:linear-gradient(135deg,#ff6b7a,#d92342);color:#fff;border-color:#ff9aa4}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.banner{max-width:1180px;margin:0 auto 12px;padding:11px 13px;border:1px solid rgba(255,200,87,.4);background:rgba(255,200,87,.08);border-radius:10px;color:var(--warn);font-size:13px;display:none}
+.banner.show{display:block}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;max-width:1180px;margin:0 auto}
+.card{grid-column:span 12;background:linear-gradient(180deg,rgba(16,36,48,.92),rgba(10,24,33,.96));border:1px solid var(--line);border-radius:15px;padding:15px;box-shadow:var(--shadow);overflow:hidden}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:750;letter-spacing:.4px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:#09141c;text-transform:uppercase}
+.badge.ok{color:var(--ok);border-color:rgba(67,224,192,.35);background:rgba(67,224,192,.08)}
+.badge.warn{color:var(--warn);border-color:rgba(255,200,87,.35);background:rgba(255,200,87,.08)}
+.badge.bad{color:var(--danger);border-color:rgba(255,107,122,.35);background:rgba(255,107,122,.08)}
+.kv{display:grid;grid-template-columns:110px minmax(0,1fr);gap:7px 10px;font-size:13px}
+.kv .k{color:var(--muted)}
+.kv .v{min-width:0;overflow-wrap:anywhere}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.field-label{display:block;margin:12px 0 5px;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase}
+input[type=text],input[type=password],select,textarea{width:100%;border:1px solid var(--line);background:#061018;color:var(--text);border-radius:10px;padding:10px 11px;font:inherit;font-size:13px;min-height:42px}
+textarea{resize:vertical;line-height:1.45;word-break:break-all}
+input[type=text]:focus,input[type=password]:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(67,224,192,.1)}
+#firebaseLoginBox,#firebaseAccountBox{margin-top:12px;padding-top:2px;border-top:1px solid rgba(29,55,69,.7)}
+pre{margin:10px 0 0;padding:11px;background:#061018;border:1px solid #142c39;border-radius:10px;color:#a9c3cf;font-size:11px;line-height:1.45;max-height:190px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.log-row{padding:10px 0;border-bottom:1px solid rgba(29,55,69,.7)}
+.log-row:last-child{border-bottom:0}
+.log-top{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted);margin-bottom:5px}
+.log-msg{font-size:13px;line-height:1.45;overflow-wrap:anywhere;white-space:pre-wrap}
+.log-stack{margin-top:8px;color:#9db4c0;font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere}
+.empty{color:var(--muted);font-size:13px;padding:10px 0}
+.health-row{display:grid;grid-template-columns:10px minmax(0,1fr);gap:9px;padding:9px 0;border-bottom:1px solid rgba(29,55,69,.7)}
+.health-row:last-child{border-bottom:0}
+.health-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--muted);box-shadow:0 0 0 3px rgba(139,166,180,.08)}
+.health-row.ok .health-dot{background:var(--ok);box-shadow:0 0 0 3px rgba(67,224,192,.1)}
+.health-row.warn .health-dot{background:var(--warn);box-shadow:0 0 0 3px rgba(255,200,87,.1)}
+.health-row.fail .health-dot{background:var(--danger);box-shadow:0 0 0 3px rgba(255,107,122,.1)}
+.health-label{font-size:12px;font-weight:750;letter-spacing:.2px}
+.health-detail{color:var(--muted);font-size:11px;line-height:1.45;margin-top:2px;overflow-wrap:anywhere}
+.health-fix{color:var(--warn);font-size:11px;line-height:1.45;margin-top:3px}
+.hint{color:var(--muted);font-size:11px;line-height:1.45;margin:8px 0 0}
+.toast{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#102430;border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:9;max-width:calc(100vw - 28px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:760px){.card.half{grid-column:span 6}.card.full{grid-column:span 12}.brand h1{font-size:24px}}
+@media(max-width:640px){.top-actions{width:100%}.profile{flex:1 1 100%}.profile-email,.profile-sub{max-width:60vw}.top-actions .btn{flex:1 1 auto}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand">
+    <span class="dot"></span>
+    <div>
+      <h1>Armaan Admin</h1>
+      <p class="sub" id="subline">Firebase, crash logs, and tunnel control · <a href="/admin/users" style="color:var(--brand)">User Management</a></p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <div class="profile" id="profileChip">
+      <div class="avatar" id="profileAvatar">G</div>
+      <div class="profile-meta">
+        <div class="profile-label">Firebase account</div>
+        <div class="profile-email" id="profileEmail">Not connected</div>
+        <div class="profile-sub" id="profileProject">Local mode</div>
+      </div>
+    </div>
+    <button class="btn ghost" id="tokenBtn" type="button">Admin token</button>
+    <a class="btn" href="/admin/users" style="text-decoration:none">Users &amp; devices</a>
+    <button class="btn remove" id="profileRemove" type="button" disabled>Remove account</button>
+    <button class="btn primary" id="refreshBtn" type="button">Refresh</button>
+  </div>
+</div>
+
+<div class="banner" id="banner"></div>
+
+<main class="grid">
+  <section class="card half">
+    <h2>Cloudflare tunnel <span class="badge" id="tunnelBadge">loading</span></h2>
+    <div class="kv">
+      <span class="k">Public URL</span><span class="v" id="tunnelUrl">—</span>
+      <span class="k">Process</span><span class="v" id="tunnelPid">—</span>
+      <span class="k">Restarts</span><span class="v" id="tunnelRestarts">—</span>
+      <span class="k">Error</span><span class="v" id="tunnelError">—</span>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="tunnelStart" type="button">Start</button>
+      <button class="btn" id="tunnelRestart" type="button">Restart</button>
+      <button class="btn" id="tunnelPublish" type="button">Broadcast to APKs</button>
+      <button class="btn danger" id="tunnelStop" type="button">Stop</button>
+    </div>
+    <pre id="tunnelLog">No tunnel log yet.</pre>
+  </section>
+
+  <section class="card full" id="healthCard">
+    <h2>Live diagnostics <span class="badge" id="healthBadge">not run</span></h2>
+    <p class="hint">Checks the tunnel, public dashboard, OAuth short link, Google sign-in page, Firebase account, Firestore database, APK config, and crash storage. The browser test opens the login link in headless Chromium and reads the rendered Google page.</p>
+    <div class="actions">
+      <button class="btn primary" id="healthRun" type="button">Run health check</button>
+      <button class="btn" id="healthBrowser" type="button">Open &amp; test login</button>
+    </div>
+    <div id="healthList"><div class="empty">No diagnostics yet.</div></div>
+  </section>
+
+  <section class="card full" id="devicesCard">
+    <h2>Connected devices <span class="badge" id="deviceBadge">0</span></h2>
+    <p class="hint">Live APK sockets grouped by device. Multiple phones can stay connected at the same time; the tunnel URL is pushed to every open socket and published to Firestore for reconnects.</p>
+    <div class="actions">
+      <button class="btn" id="deviceRefresh" type="button">Refresh devices</button>
+    </div>
+    <div id="deviceList"><div class="empty">No APK device connected.</div></div>
+  </section>
+
+  <section class="card full" id="tenantsCard">
+    <h2>Users &amp; licenses <span class="badge" id="tenantUserBadge">0</span></h2>
+    <p class="hint">Each user only sees and controls the devices bound to their own APK token. Licenses expire automatically; expired or disabled accounts are blocked at login and on every API call.</p>
+    <div class="field-label">Create user</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px">
+      <input id="newUsername" type="text" placeholder="username" autocomplete="off">
+      <input id="newPassword" type="password" placeholder="password" autocomplete="new-password">
+      <input id="newDays" type="text" inputmode="numeric" placeholder="license days (e.g. 30)">
+      <button class="btn primary" id="createUserBtn" type="button">Create user</button>
+    </div>
+    <p class="hint">The APK client token is generated with the user. Put it in the APK build (conk / Redirect_k); any phone connecting with it belongs to that user.</p>
+    <div id="tenantUserList"><div class="empty">Loading users…</div></div>
+  </section>
+
+  <section class="card full" id="tenantDevicesCard">
+    <h2>Device ownership <span class="badge" id="tenantDeviceBadge">0</span></h2>
+    <p class="hint">Every connected APK appears here with its owner. Reassign a device when moving a phone to another tenant.</p>
+    <div class="actions">
+      <button class="btn" id="tenantRefresh" type="button">Refresh users &amp; devices</button>
+    </div>
+    <div id="tenantDeviceList"><div class="empty">Loading devices…</div></div>
+  </section>
+
+  <section class="card half">
+    <h2>Firebase <span class="badge" id="firebaseBadge">loading</span></h2>
+    <div class="kv">
+      <span class="k">Mode</span><span class="v" id="firebaseMode">—</span>
+      <span class="k">Account</span><span class="v" id="firebaseAccount">—</span>
+      <span class="k">Project</span><span class="v" id="firebaseProject">—</span>
+      <span class="k">Auto setup</span><span class="v" id="firebaseBootstrap">—</span>
+      <span class="k">Firestore</span><span class="v" id="firebaseDatabase">—</span>
+      <span class="k">Credential</span><span class="v" id="firebaseCredential">—</span>
+      <span class="k">Error</span><span class="v" id="firebaseError">—</span>
+    </div>
+
+    <div id="firebaseLoginBox">
+      <p class="hint">Tap Add account. Google opens directly, you enter Gmail, and the local callback finishes login automatically. The backend then creates or selects the Firebase project, creates Firestore in asia-south1, deploys rules, and fills the APK config. No code copy is needed.</p>
+      <div class="actions">
+        <button class="btn primary" id="firebaseAddAccount" type="button">Add account</button>
+        <button class="btn ghost" id="firebaseLocalLogin" type="button">Manual code</button>
+        <button class="btn ghost" id="firebaseNewLogin" type="button" style="display:none">New login link</button>
+        <button class="btn" id="firebaseRecheck" type="button">Re-check</button>
+      </div>
+      <div id="loginUrlWrap" style="display:none">
+        <label class="field-label" for="loginUrl">Authorization URL</label>
+        <textarea id="loginUrl" rows="3" readonly></textarea>
+        <p class="hint" id="loginUrlHint">Automatic mode: approve Google and this tab returns to the local callback by itself. The code box below is only needed if the callback is blocked.</p>
+        <label class="field-label" for="loginCode">Authorization code (manual fallback)</label>
+        <input id="loginCode" type="text" autocomplete="one-time-code" placeholder="Only for manual fallback">
+        <div class="actions">
+          <button class="btn primary" id="firebaseComplete" type="button">Complete login</button>
+          <button class="btn ghost" id="firebaseCancel" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="firebaseAccountBox" style="display:none">
+      <div class="kv" style="margin-top:8px;margin-bottom:8px">
+        <span class="k">Connected Gmail</span><span class="v" id="firebaseUserEmail">—</span>
+      </div>
+      <label class="field-label" for="firebaseProjectSelect">Project</label>
+      <select id="firebaseProjectSelect"></select>
+      <div class="actions">
+        <button class="btn primary" id="firebaseAutoSetup" type="button">Auto setup Firestore</button>
+        <button class="btn" id="firebaseConnectProject" type="button">Connect project</button>
+        <button class="btn" id="firebaseRefreshProjects" type="button">Refresh projects</button>
+        <button class="btn" id="firebaseAcceptTos" type="button" style="display:none">Accept Google Cloud Terms</button>
+      </div>
+      <label class="field-label" for="firebaseAppSelect">Web app</label>
+      <select id="firebaseAppSelect">
+        <option value="">Auto (create one if missing)</option>
+      </select>
+      <div class="actions">
+        <button class="btn" id="firebaseRefreshApps" type="button">Refresh apps</button>
+        <button class="btn primary" id="firebaseSyncApk" type="button">Sync API to APK</button>
+      </div>
+      <p class="hint">Project connection creates the Firestore database, deploys the public discovery rules, and syncs the APK config automatically.</p>
+      <div class="actions">
+        <button class="btn danger" id="firebaseDeleteDatabase" type="button">Delete Firestore DB</button>
+        <button class="btn danger" id="firebaseDeleteProject" type="button">Delete Firebase project</button>
+      </div>
+    </div>
+
+    <pre id="firebaseConfig">No server_config document.</pre>
+    <div class="actions">
+      <button class="btn" id="firebaseRefresh" type="button">Re-check</button>
+      <button class="btn danger" id="firebaseDelete" type="button">Delete config</button>
+    </div>
+    <p class="hint" id="firebaseHint"></p>
+  </section>
+
+  <section class="card full" id="apkConfigCard">
+    <h2>Firebase config for APK <span class="badge" id="apkConfigBadge">assets/config.json</span></h2>
+    <p class="hint">This is the exact JSON the APK reads at startup. Copy it into <strong>APK_clean/app/src/main/assets/config.json</strong>, or let Connect project write it for you.</p>
+    <pre id="firebaseApkConfig">No APK config loaded.</pre>
+    <div class="actions">
+      <button class="btn primary" id="firebaseDownloadConfig" type="button">Download config.json</button>
+      <button class="btn" id="firebaseCopyConfig" type="button">Copy JSON</button>
+      <button class="btn" id="firebaseRefreshConfig" type="button">Refresh JSON</button>
+      <button class="btn" id="firebaseBuildApk" type="button">Rebuild APK</button>
+    </div>
+    <pre id="firebaseBuildLog">No APK build yet.</pre>
+  </section>
+
+  <section class="card full">
+    <h2>Crash logs <span class="badge" id="crashBadge">0</span></h2>
+    <p class="hint">Remote reports from the APK. Clearing removes the Firestore <strong>crash_logs</strong> collection or the local fallback file.</p>
+    <div class="actions" style="margin-top:0;margin-bottom:6px">
+      <button class="btn danger" id="crashClear" type="button">Delete all crash logs</button>
+      <button class="btn" id="crashRefresh" type="button">Refresh logs</button>
+    </div>
+    <div id="crashList"><div class="empty">No crash reports.</div></div>
+    <p class="hint">APK reports arrive at POST /error. In Firebase mode they go to the crash_logs collection; otherwise they are kept in storage/admin-data.json.</p>
+  </section>
+
+  <section class="card full">
+    <h2>Runtime config</h2>
+    <pre id="runtimeConfig">Loading…</pre>
+    <p class="hint" id="storageHint"></p>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var tokenKey = 'armaan_admin_token';
+  var token = localStorage.getItem(tokenKey) || '';
+  var data = null;
+  var timer = null;
+  var firebaseAccountInfo = null;
+  var firebaseProjects = [];
+  var firebaseApps = [];
+  var apkConfigJson = null;
+  var buildPoll = null;
+  var loginWatch = null;
+  var bootstrapPoll = null;
+  var healthInFlight = false;
+  var healthTimer = null;
+
+  function $(id) { return document.getElementById(id); }
+  function esc(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function setText(id, value) { var el = $(id); if (el) el.textContent = value == null || value === '' ? '—' : String(value); }
+  function badge(id, text, tone) {
+    var el = $(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = 'badge' + (tone ? ' ' + tone : '');
+  }
+  function toast(message) {
+    var el = $('toast');
+    el.textContent = message;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('show'); }, 3200);
+  }
+  function banner(message) {
+    var el = $('banner');
+    el.textContent = message;
+    el.classList.toggle('show', !!message);
+  }
+  function fmtTime(value) {
+    if (!value) return '—';
+    var date = new Date(value);
+    return isNaN(date.getTime()) ? String(value) : date.toLocaleString();
+  }
+  function fmtUptime(seconds) {
+    if (seconds == null) return '—';
+    var h = Math.floor(seconds / 3600);
+    var m = Math.floor((seconds % 3600) / 60);
+    return (h ? h + 'h ' : '') + m + 'm';
+  }
+  function isEditing() {
+    var el = document.activeElement;
+    if (!el) return false;
+    var tag = (el.tagName || '').toUpperCase();
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+  }
+
+  async function api(path, options) {
+    var opts = options || {};
+    var headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+    if (token) headers['x-admin-token'] = token;
+    var res = await fetch('/api/admin' + path, {
+      method: opts.method || 'GET',
+      headers: headers,
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+      cache: 'no-store'
+    });
+    if (res.status === 401) {
+      banner('Admin token required. Tap “Admin token”, paste the value from ADMIN_TOKEN, then refresh.');
+      throw new Error('Unauthorized');
+    }
+    if (!res.ok) {
+      var text = await res.text();
+      throw new Error(text || ('HTTP ' + res.status));
+    }
+    return res.json();
+  }
+
+  function renderTunnel(tunnel) {
+    var tone = tunnel.status === 'running' ? 'ok' : (tunnel.status === 'starting' || tunnel.status === 'stopping' ? 'warn' : (tunnel.status === 'error' ? 'bad' : ''));
+    badge('tunnelBadge', tunnel.status || 'stopped', tone);
+    if (tunnel.url) {
+      $('tunnelUrl').innerHTML = '<a href="' + esc(tunnel.url) + '" target="_blank" rel="noreferrer">' + esc(tunnel.url) + '</a>';
+    } else {
+      setText('tunnelUrl', '—');
+    }
+    setText('tunnelPid', tunnel.pid || '—');
+    setText('tunnelRestarts', tunnel.restarts == null ? '—' : tunnel.restarts);
+    setText('tunnelError', tunnel.error || '—');
+    $('tunnelLog').textContent = (tunnel.log && tunnel.log.length) ? tunnel.log.join('\n') : 'No tunnel log yet.';
+    $('tunnelStart').disabled = tunnel.status === 'running' || tunnel.status === 'starting';
+    $('tunnelStop').disabled = tunnel.status === 'stopped' || tunnel.status === 'stopping';
+  }
+
+  function renderProjects(projects, selectedId) {
+    var select = $('firebaseProjectSelect');
+    var list = projects || [];
+    if (!list.length) {
+      select.innerHTML = '<option value="">No projects found</option>';
+      return;
+    }
+    select.innerHTML = list.map(function (project) {
+      var id = project.projectId || '';
+      var label = (project.displayName || id) + ' — ' + id;
+      return '<option value="' + esc(id) + '"' + (id === selectedId ? ' selected' : '') + '>' + esc(label) + '</option>';
+    }).join('');
+    if (!select.value && selectedId) select.value = selectedId;
+  }
+
+  function renderApps(apps, selectedId) {
+    var select = $('firebaseAppSelect');
+    var list = apps || [];
+    var html = '<option value="">Auto (create one if missing)</option>';
+    html += list.map(function (app) {
+      var id = app.appId || '';
+      var label = (app.displayName || id) + ' — ' + (app.platform || 'APP');
+      return '<option value="' + esc(id) + '"' + (id === selectedId ? ' selected' : '') + '>' + esc(label) + '</option>';
+    }).join('');
+    select.innerHTML = html;
+  }
+
+  function loginHref(info) {
+    var pending = info && info.pendingLogin;
+    if (!pending || !pending.url) return null;
+    return pending.mode === 'loopback' || pending.mode === 'localhost'
+      ? (location.origin + '/firebase-login')
+      : pending.url;
+  }
+
+  function showLoginUrl(url, mode) {
+    if (!url) return;
+    // Direct Google flows use the short server-side redirect. Showing that
+    // instead of the 600-character OAuth URL prevents copy/paste whitespace
+    // errors (the "response_type=c ode" failure).
+    var direct = mode === 'loopback' || mode === 'localhost';
+    $('loginUrl').value = direct ? (location.origin + '/firebase-login') : url;
+    if ($('loginUrlHint')) {
+      $('loginUrlHint').textContent = mode === 'loopback'
+        ? 'Automatic mode: approve Google and this tab returns to the local callback by itself. You can close the callback tab after it says Login complete.'
+        : 'Manual fallback: if Google shows a localhost error page, copy the full address-bar URL or the code into the box below.';
+    }
+    $('loginUrlWrap').style.display = 'block';
+  }
+
+  function renderApkConfig(config) {
+    apkConfigJson = config || null;
+    var el = $('firebaseApkConfig');
+    if (el) el.textContent = config ? JSON.stringify(config, null, 2) : 'No APK config loaded.';
+    badge('apkConfigBadge', config && config.firebase_project_id ? 'synced' : 'empty', config && config.firebase_project_id ? 'ok' : 'warn');
+  }
+
+  async function loadApkConfig() {
+    try {
+      var result = await api('/firebase/apk-config');
+      renderApkConfig(result.config || null);
+    } catch (err) {
+      renderApkConfig(null);
+      setText('firebaseError', err.message);
+    }
+  }
+
+  function copyRawText(value) {
+    var text = String(value == null ? '' : value);
+    if (!text) return Promise.reject(new Error('Nothing to copy'));
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      try {
+        document.execCommand('copy') ? resolve() : reject(new Error('Copy failed'));
+      } catch (err) {
+        reject(err);
+      } finally {
+        document.body.removeChild(area);
+      }
+    });
+  }
+
+  function renderLoginButtons(info) {
+    var pending = info && info.pendingLogin;
+    var active = !!(pending && pending.status === 'pending' && pending.url);
+    $('firebaseAddAccount').textContent = active ? 'Open login link' : 'Add account';
+    $('firebaseNewLogin').style.display = active ? 'inline-flex' : 'none';
+  }
+
+  function renderBootstrap(info) {
+    var b = (info && info.bootstrap) || {};
+    var status = b.status || 'idle';
+    var labels = {
+      idle: 'waiting for login',
+      'waiting-login': 'waiting for login',
+      connecting: 'loading projects',
+      'creating-project': 'creating project',
+      'creating-database': 'creating Firestore',
+      'database-creating': 'Firestore starting',
+      'tos-required': 'Google Cloud terms required',
+      ready: 'ready',
+      error: 'error'
+    };
+    var label = labels[status] || status;
+    if (b.projectId) label += ' · ' + b.projectId;
+    setText('firebaseBootstrap', label);
+    setText('firebaseDatabase', b.databaseState || b.message || '—');
+    if (b.error) setText('firebaseError', b.error);
+    var tosButton = $('firebaseAcceptTos');
+    if (tosButton) {
+      var needsTos = status === 'tos-required' || !!b.acceptUrl;
+      tosButton.style.display = needsTos ? 'inline-flex' : 'none';
+      tosButton.dataset.url = b.acceptUrl || 'https://console.cloud.google.com/tos?id=cloud';
+    }
+    if (status === 'connecting' || status === 'creating-project' || status === 'creating-database' || status === 'database-creating' || status === 'tos-required') {
+      watchBootstrap();
+    }
+  }
+
+  function watchBootstrap() {
+    if (bootstrapPoll) return;
+    bootstrapPoll = setTimeout(async function () {
+      bootstrapPoll = null;
+      try {
+        var result = await api('/firebase/bootstrap-status');
+        if (firebaseAccountInfo) firebaseAccountInfo.bootstrap = result.bootstrap;
+        renderBootstrap(result);
+        var status = result.bootstrap && result.bootstrap.status;
+        if (status === 'ready' || status === 'error' || status === 'idle' || status === 'waiting-login') return;
+        watchBootstrap();
+      } catch (err) {
+        watchBootstrap();
+      }
+    }, 2500);
+  }
+
+  function watchLogin() {
+    if (loginWatch) clearInterval(loginWatch);
+    var started = Date.now();
+    loginWatch = setInterval(async function () {
+      try {
+        var info = await api('/firebase/account');
+        firebaseAccountInfo = info;
+        renderLoginButtons(info);
+        renderBootstrap(info);
+        if (info.account && info.account.loggedIn) {
+          clearInterval(loginWatch);
+          loginWatch = null;
+          var email = info.account.email || 'Firebase account';
+          toast('Signed in as ' + email + '. Auto setup is running.');
+          $('loginUrlWrap').style.display = 'none';
+          await load();
+          runHealth(false, true);
+        } else if (Date.now() - started > 5 * 60 * 1000) {
+          clearInterval(loginWatch);
+          loginWatch = null;
+        }
+      } catch (err) {
+        // Keep polling while the user is on Google's page.
+      }
+    }, 3000);
+  }
+
+  function renderBuild(build) {
+    if (!build) return;
+    var status = build.status || 'idle';
+    var lines = build.log && build.log.length ? build.log : [];
+    var header = 'APK build: ' + status + (build.exitCode == null ? '' : ' (exit ' + build.exitCode + ')');
+    $('firebaseBuildLog').textContent = [header].concat(lines).join('\n');
+    $('firebaseBuildApk').disabled = status === 'running';
+    if (status === 'running') pollBuild();
+  }
+
+  function renderFirebase(firebase, config, accountInfo) {
+    var enabled = !!(firebase && firebase.enabled);
+    var account = (accountInfo && accountInfo.account) || (firebase && firebase.account) || {};
+    var loggedIn = !!account.loggedIn;
+    var link = (accountInfo && accountInfo.link) || (firebase && firebase.linkedProject) || null;
+    var email = account.email || (loggedIn ? 'signed in' : 'Not connected');
+    var project = (link && link.projectId) || firebase.projectId || (enabled ? (firebase.mode || 'firebase') : 'Local mode');
+
+    setText('profileEmail', email);
+    setText('profileProject', project);
+    var avatar = $('profileAvatar');
+    if (avatar) avatar.textContent = email && email !== 'Not connected' ? email.charAt(0).toUpperCase() : 'G';
+    var removeBtn = $('profileRemove');
+    if (removeBtn) {
+      removeBtn.disabled = !loggedIn;
+      removeBtn.title = loggedIn ? 'Sign out and clear the saved Firebase link' : 'Connect a Firebase account first';
+    }
+
+    badge('firebaseBadge', enabled ? (firebase.mode || 'firebase') : (loggedIn ? 'account' : 'local'), enabled ? 'ok' : (loggedIn ? 'warn' : ''));
+    setText('firebaseMode', firebase.mode || (enabled ? 'firebase' : 'local'));
+    setText('firebaseAccount', account.email || (loggedIn ? 'signed in' : 'not signed in'));
+    setText('firebaseUserEmail', account.email || (loggedIn ? 'signed in' : '—'));
+    setText('firebaseProject', (link && link.projectId) || firebase.projectId || '—');
+    setText('firebaseCredential', firebase.credentialSource || '—');
+    setText('firebaseError', firebase.error || (accountInfo && accountInfo.cliError) || '—');
+    $('firebaseConfig').textContent = config ? JSON.stringify(config, null, 2) : 'No server_config document.';
+
+    $('firebaseLoginBox').style.display = loggedIn ? 'none' : 'block';
+    $('firebaseAccountBox').style.display = loggedIn ? 'block' : 'none';
+
+    if (loggedIn) {
+      renderProjects(firebaseProjects, link && link.projectId);
+      renderApps(firebaseApps, link && link.appId);
+    }
+
+    renderBootstrap(accountInfo);
+    if (enabled) {
+      $('firebaseHint').textContent = firebase.mode === 'firestore-rest'
+        ? 'Firestore is active through the Firebase CLI account. Settings and crash reports are written remotely.'
+        : 'Firestore is active through a service account. Settings and crash reports are written remotely.';
+    } else if (loggedIn) {
+      $('firebaseHint').textContent = link
+        ? 'Account connected to ' + link.projectId + '. Connect project creates the Firestore database, deploys the public URL rules, and syncs the API to the APK.'
+        : 'Account connected. Choose a project, then Connect project to create the database and sync the APK.';
+    } else {
+      $('firebaseHint').textContent = 'Local fallback is active. Tap Add account to sign in with Firebase.';
+    }
+
+    $('storageHint').textContent = enabled
+      ? 'Storage: Firestore (' + (firebase.mode || 'firebase') + ').'
+      : 'Storage: ' + (firebase.storageFile || 'storage/admin-data.json');
+  }
+
+  function renderCrashes(logs) {
+    var list = logs || [];
+    badge('crashBadge', String(list.length), list.length ? 'warn' : '');
+    if (!list.length) {
+      $('crashList').innerHTML = '<div class="empty">No crash reports.</div>';
+      return;
+    }
+    $('crashList').innerHTML = list.map(function (item) {
+      var stack = item.stack ? '<details><summary class="hint">Stack trace</summary><div class="log-stack">' + esc(item.stack) + '</div></details>' : '';
+      return '<div class="log-row">' +
+        '<div class="log-top"><span>' + esc(fmtTime(item.timestamp)) + '</span><span>' + esc(item.device || 'unknown') + '</span></div>' +
+        '<div class="log-msg">' + esc(item.message || '') + '</div>' + stack +
+        '</div>';
+    }).join('');
+  }
+
+  function renderDevices(payload) {
+    var devices = (payload && payload.devices) || [];
+    var online = (payload && payload.online) || devices.filter(function (d) { return d.connected; }).length;
+    badge('deviceBadge', online + '/' + devices.length + ' online', devices.length ? (online ? 'ok' : 'warn') : '');
+    if (!devices.length) {
+      $('deviceList').innerHTML = '<div class="empty">No APK device connected.</div>';
+      return;
+    }
+    $('deviceList').innerHTML = devices.map(function (device) {
+      var name = device.model || device.idf || device.pid || device.id || 'unknown device';
+      var batteryValue = device.battery && typeof device.battery === 'object'
+        ? (device.battery.level != null ? device.battery.level + '%' : '')
+        : (device.battery == null ? '' : String(device.battery));
+      var battery = batteryValue ? ' · battery ' + batteryValue : '';
+      var android = device.android ? 'Android ' + device.android : '';
+      var meta = [android, device.ip, device.network].filter(Boolean).join(' · ');
+      return '<div class="log-row">' +
+        '<div class="log-top"><span>' + esc(name) + '</span><span>' + (device.connected ? 'online' : 'offline') + '</span></div>' +
+        '<div class="log-msg">' + esc(meta + battery) + '</div>' +
+        '<div class="hint">id ' + esc(device.idf || device.pid || device.id || '—') + (device.number ? ' · ' + esc(device.number) : '') + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  async function loadDevices() {
+    try {
+      var payload = await api('/devices');
+      renderDevices(payload);
+    } catch (err) {
+      $('deviceList').innerHTML = '<div class="empty">' + esc(err.message) + '</div>';
+    }
+  }
+
+  function renderHealth(result) {
+    var checks = (result && result.checks) || [];
+    var summary = (result && result.summary) || { ok: 0, warn: 0, fail: 0 };
+    var tone = summary.fail ? 'bad' : (summary.warn ? 'warn' : 'ok');
+    var label = summary.fail ? 'error' : (summary.warn ? 'attention' : 'healthy');
+    badge('healthBadge', label, tone);
+
+    if (!checks.length) {
+      $('healthList').innerHTML = '<div class="empty">No diagnostics returned.</div>';
+      return;
+    }
+
+    $('healthList').innerHTML = checks.map(function (item) {
+      var status = item.status === 'fail' ? 'fail' : (item.status === 'warn' ? 'warn' : 'ok');
+      var fix = item.fix ? '<div class="health-fix">Fix: ' + esc(item.fix) + '</div>' : '';
+      return '<div class="health-row ' + status + '">' +
+        '<span class="health-dot"></span>' +
+        '<div><div class="health-label">' + esc(item.label || item.id || 'check') + '</div>' +
+        '<div class="health-detail">' + esc(item.detail || '') + '</div>' + fix + '</div>' +
+        '</div>';
+    }).join('');
+
+    if (result.checkedAt) {
+      var elapsed = result.durationMs == null ? '' : ' · ' + result.durationMs + 'ms';
+      $('healthList').insertAdjacentHTML('beforeend',
+        '<p class="hint">Checked ' + esc(fmtTime(result.checkedAt)) + elapsed + ' · ' +
+        summary.ok + ' ok · ' + summary.warn + ' warning · ' + summary.fail + ' failed</p>');
+    }
+  }
+
+  async function runHealth(browser, silent) {
+    if (healthInFlight) return;
+    healthInFlight = true;
+    var btn = $('healthRun');
+    if (btn) btn.disabled = true;
+    badge('healthBadge', browser ? 'browser test…' : 'checking…', 'warn');
+    try {
+      var result = await api('/health-check' + (browser ? '?browser=1' : ''));
+      renderHealth(result);
+      if (!silent) {
+        toast(result.ok
+          ? (result.summary.warn ? 'Health check passed with ' + result.summary.warn + ' warning(s)' : 'Health check passed')
+          : 'Health check found ' + result.summary.fail + ' error(s)');
+      }
+    } catch (err) {
+      badge('healthBadge', 'check failed', 'bad');
+      $('healthList').innerHTML = '<div class="empty">' + esc(err.message) + '</div>';
+      if (!silent) toast(err.message);
+    } finally {
+      healthInFlight = false;
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function render(payload) {
+    data = payload;
+    renderTunnel(payload.tunnel || {});
+    renderFirebase(payload.firebase || {}, payload.firebaseConfig, firebaseAccountInfo);
+    renderCrashes(payload.crashLogs);
+    renderBuild(payload.apkBuild);
+    $('runtimeConfig').textContent = JSON.stringify(payload.config || {}, null, 2);
+    setText('subline', 'Uptime ' + fmtUptime(payload.uptime) + ' · ' + (payload.firebase && payload.firebase.mode !== 'local' ? payload.firebase.mode : 'local storage'));
+    banner('');
+  }
+
+  async function loadProjects(force) {
+    if (!force && firebaseProjects.length) return firebaseProjects;
+    var result = await api('/firebase/projects');
+    firebaseProjects = result.projects || [];
+    renderProjects(firebaseProjects, firebaseAccountInfo && firebaseAccountInfo.link && firebaseAccountInfo.link.projectId);
+    return firebaseProjects;
+  }
+
+  async function loadApps(projectId, force) {
+    if (!projectId) {
+      firebaseApps = [];
+      renderApps(firebaseApps, null);
+      return firebaseApps;
+    }
+    if (!force && firebaseApps.length) return firebaseApps;
+    var result = await api('/firebase/apps', { method: 'POST', body: { projectId: projectId } });
+    firebaseApps = result.apps || [];
+    renderApps(firebaseApps, firebaseAccountInfo && firebaseAccountInfo.link && firebaseAccountInfo.link.appId);
+    return firebaseApps;
+  }
+
+  async function loadFirebaseAccount() {
+    try {
+      var info = await api('/firebase/account');
+      firebaseAccountInfo = info;
+      renderLoginButtons(info);
+      if (info.pendingLogin && info.pendingLogin.status === 'pending' && info.pendingLogin.url) {
+        showLoginUrl(info.pendingLogin.url, info.pendingLogin.mode);
+        if (info.pendingLogin.mode === 'loopback' && !(info.account && info.account.loggedIn)) {
+          watchLogin();
+        }
+      }
+      if (info.account && info.account.loggedIn) {
+        try {
+          await loadProjects(false);
+          var link = info.link;
+          if (link && link.projectId) await loadApps(link.projectId, false);
+        } catch (err) {
+          // Account is still usable even if project listing fails.
+          setText('firebaseError', err.message);
+        }
+        await loadApkConfig();
+      } else {
+        firebaseProjects = [];
+        firebaseApps = [];
+        await loadApkConfig();
+      }
+      renderFirebase((data && data.firebase) || {}, data && data.firebaseConfig, info);
+    } catch (err) {
+      if (err.message !== 'Unauthorized') setText('firebaseError', err.message);
+    }
+  }
+
+  var tenantUsers = [];
+  var tenantDevices = [];
+
+  function licenseLabel(user) {
+    var license = user.license || {};
+    if (user.role === 'super_admin' || license.reason === 'super-admin') return { text: 'super admin', tone: 'ok' };
+    if (license.reason === 'disabled') return { text: 'disabled', tone: 'bad' };
+    if (license.active) return { text: 'active · ' + license.daysLeft + 'd', tone: 'ok' };
+    return { text: license.reason === 'expired' ? 'expired' : (license.reason || 'inactive'), tone: 'bad' };
+  }
+
+  function renderTenantUsers(payload) {
+    tenantUsers = (payload && payload.users) || [];
+    badge('tenantUserBadge', tenantUsers.length + ' users', tenantUsers.length ? 'ok' : '');
+    if (!tenantUsers.length) {
+      $('tenantUserList').innerHTML = '<div class="empty">No users yet. Create one above.</div>';
+      return;
+    }
+    $('tenantUserList').innerHTML = tenantUsers.map(function (user) {
+      var status = licenseLabel(user);
+      var expires = user.license && user.license.expiresAt ? fmtTime(user.license.expiresAt) : (user.role === 'super_admin' ? 'never' : '—');
+      var disabled = Number(user.isActive) === 0;
+      var isAdmin = user.role === 'super_admin';
+      return '<div class="log-row" data-user="' + esc(user.username) + '">' +
+        '<div class="log-top"><span>' + esc(user.username) + ' <span class="badge">' + esc(user.role) + '</span></span>' +
+        '<span class="badge ' + status.tone + '">' + esc(status.text) + '</span></div>' +
+        '<div class="log-msg">devices: ' + esc(user.deviceCount) + ' · expires: ' + esc(expires) + '</div>' +
+        '<div class="hint">token: <span style="font-family:ui-monospace,monospace;word-break:break-all">' + esc(user.clientToken || '—') + '</span></div>' +
+        (isAdmin ? '' : '<div class="actions">' +
+          '<input type="text" inputmode="numeric" data-license-days placeholder="days" style="max-width:110px;min-height:34px;padding:6px 9px">' +
+          '<button class="btn small" type="button" data-action="license">Set license</button>' +
+          '<button class="btn small" type="button" data-action="toggle">' + (disabled ? 'Enable' : 'Disable') + '</button>' +
+          '<button class="btn small" type="button" data-action="password">Reset password</button>' +
+          '<button class="btn small" type="button" data-action="token">Rotate token</button>' +
+          '<button class="btn small danger" type="button" data-action="delete">Delete</button>' +
+        '</div>') +
+        '</div>';
+    }).join('');
+  }
+
+  function renderTenantDevices(payload) {
+    tenantDevices = (payload && payload.devices) || [];
+    var online = tenantDevices.filter(function (d) { return d.online; }).length;
+    badge('tenantDeviceBadge', online + '/' + tenantDevices.length + ' online', tenantDevices.length ? (online ? 'ok' : 'warn') : '');
+    if (!tenantDevices.length) {
+      $('tenantDeviceList').innerHTML = '<div class="empty">No device recorded yet. Connect an APK first.</div>';
+      return;
+    }
+    var userOptions = tenantUsers.filter(function (u) { return u.role !== 'super_admin'; }).map(function (u) {
+      return '<option value="' + esc(u.username) + '">' + esc(u.username) + '</option>';
+    }).join('');
+    $('tenantDeviceList').innerHTML = tenantDevices.map(function (device) {
+      var owner = device.owner || 'unassigned';
+      var meta = [device.model, device.android ? 'Android ' + device.android : '', device.lastSeen ? 'last seen ' + fmtTime(device.lastSeen) : ''].filter(Boolean).join(' · ');
+      return '<div class="log-row" data-device="' + esc(device.key) + '">' +
+        '<div class="log-top"><span>' + esc(device.key) + '</span><span class="badge ' + (device.online ? 'ok' : '') + '">' + (device.online ? 'online' : 'offline') + '</span></div>' +
+        '<div class="log-msg">owner: <b>' + esc(owner) + '</b></div>' +
+        '<div class="hint">' + esc(meta || 'no device info') + '</div>' +
+        '<div class="actions">' +
+          '<select data-assign-user style="max-width:190px;min-height:34px;padding:6px 9px"><option value="">choose user…</option>' + userOptions + '</select>' +
+          '<button class="btn small primary" type="button" data-device-action="assign">Assign</button>' +
+          '<button class="btn small" type="button" data-device-action="unassign">Unassign</button>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  async function loadTenants() {
+    try {
+      var results = await Promise.all([api('/tenants/users'), api('/tenants/devices')]);
+      renderTenantUsers(results[0]);
+      renderTenantDevices(results[1]);
+    } catch (err) {
+      $('tenantUserList').innerHTML = '<div class="empty">' + esc(err.message) + '</div>';
+      $('tenantDeviceList').innerHTML = '<div class="empty">' + esc(err.message) + '</div>';
+    }
+  }
+
+  async function createTenantUser() {
+    var username = ($('newUsername').value || '').trim();
+    var password = $('newPassword').value || '';
+    var days = ($('newDays').value || '').trim();
+    if (!username || !password) return toast('Username and password are required');
+    var body = { username: username, password: password };
+    if (days) body.days = Number(days);
+    var button = $('createUserBtn');
+    button.disabled = true;
+    try {
+      var result = await api('/tenants/users', { method: 'POST', body: body });
+      $('newUsername').value = '';
+      $('newPassword').value = '';
+      $('newDays').value = '';
+      toast('User ' + result.user.username + ' created');
+      await loadTenants();
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function tenantUserAction(button) {
+    var row = button.closest('[data-user]');
+    if (!row) return;
+    var username = row.getAttribute('data-user');
+    var action = button.getAttribute('data-action');
+    var path = '/tenants/users/' + encodeURIComponent(username);
+    try {
+      if (action === 'license') {
+        var days = (row.querySelector('[data-license-days]').value || '').trim();
+        if (!days) return toast('Enter license days first');
+        await api(path + '/license', { method: 'PATCH', body: { days: Number(days) } });
+        toast('License updated for ' + username);
+      } else if (action === 'toggle') {
+        var user = tenantUsers.find(function (u) { return u.username === username; });
+        var disabled = user && Number(user.isActive) === 0;
+        await api(path + '/license', { method: 'PATCH', body: { disabled: !disabled } });
+        toast((disabled ? 'Enabled ' : 'Disabled ') + username);
+      } else if (action === 'password') {
+        var password = prompt('New password for ' + username + ' (min 4 chars):');
+        if (!password) return;
+        await api(path + '/password', { method: 'PATCH', body: { password: password } });
+        toast('Password updated for ' + username);
+      } else if (action === 'token') {
+        if (!confirm('Rotate the APK token for ' + username + '? APKs built with the old token will no longer be bound to this user.')) return;
+        var result = await api(path + '/token/rotate', { method: 'POST' });
+        toast('New token: ' + result.clientToken);
+      } else if (action === 'delete') {
+        if (!confirm('Delete user ' + username + '? Their devices become unassigned.')) return;
+        await api(path, { method: 'DELETE' });
+        toast('Deleted ' + username);
+      }
+      await loadTenants();
+    } catch (err) {
+      toast(err.message);
+    }
+  }
+
+  async function tenantDeviceAction(button) {
+    var row = button.closest('[data-device]');
+    if (!row) return;
+    var deviceKey = row.getAttribute('data-device');
+    var action = button.getAttribute('data-device-action');
+    try {
+      if (action === 'assign') {
+        var username = row.querySelector('[data-assign-user]').value;
+        if (!username) return toast('Choose a user first');
+        await api('/tenants/devices/assign', { method: 'POST', body: { deviceKey: deviceKey, username: username } });
+        toast(deviceKey + ' assigned to ' + username);
+      } else {
+        await api('/tenants/devices/unassign', { method: 'POST', body: { deviceKey: deviceKey } });
+        toast(deviceKey + ' unassigned');
+      }
+      await loadTenants();
+    } catch (err) {
+      toast(err.message);
+    }
+  }
+
+  async function load() {
+    $('refreshBtn').disabled = true;
+    try {
+      var payload = await api('/overview');
+      render(payload);
+      await loadFirebaseAccount();
+      await loadDevices();
+      await loadTenants();
+    } catch (err) {
+      if (err.message !== 'Unauthorized') banner(err.message);
+      toast(err.message);
+    } finally {
+      $('refreshBtn').disabled = false;
+    }
+  }
+
+  function pollBuild() {
+    if (buildPoll) return;
+    buildPoll = setTimeout(async function () {
+      buildPoll = null;
+      try {
+        var status = await api('/firebase/build-status');
+        renderBuild(status);
+      } catch (err) {
+        toast(err.message);
+      }
+    }, 3000);
+  }
+
+  async function act(path, method) {
+    try {
+      await api(path, { method: method || 'POST' });
+      toast('Done');
+      await load();
+    } catch (err) {
+      if (err.message !== 'Unauthorized') toast(err.message);
+    }
+  }
+
+  $('refreshBtn').addEventListener('click', load);
+  $('tokenBtn').addEventListener('click', function () {
+    var value = prompt('ADMIN_TOKEN value. Leave blank to clear it.', token);
+    if (value === null) return;
+    token = value.trim();
+    if (token) localStorage.setItem(tokenKey, token);
+    else localStorage.removeItem(tokenKey);
+    load();
+  });
+  $('deviceRefresh').addEventListener('click', loadDevices);
+  $('tenantRefresh').addEventListener('click', loadTenants);
+  $('createUserBtn').addEventListener('click', createTenantUser);
+  $('tenantUserList').addEventListener('click', function (event) {
+    var button = event.target.closest('button[data-action]');
+    if (button) tenantUserAction(button);
+  });
+  $('tenantDeviceList').addEventListener('click', function (event) {
+    var button = event.target.closest('button[data-device-action]');
+    if (button) tenantDeviceAction(button);
+  });
+  $('healthRun').addEventListener('click', function () { runHealth(false); });
+  $('healthBrowser').addEventListener('click', async function () {
+    var pending = firebaseAccountInfo && firebaseAccountInfo.pendingLogin;
+    if (pending && pending.status === 'pending' && pending.url) {
+      window.open(loginHref(firebaseAccountInfo) || '/firebase-login', '_blank');
+      if (pending.mode === 'loopback') watchLogin();
+    } else {
+      await startNewLogin('loopback');
+    }
+    runHealth(true);
+  });
+
+  $('tunnelStart').addEventListener('click', function () { act('/tunnel/start'); });
+  $('tunnelStop').addEventListener('click', function () { act('/tunnel/stop'); });
+  $('tunnelRestart').addEventListener('click', function () { act('/tunnel/restart'); });
+  $('tunnelPublish').addEventListener('click', async function () {
+    var btn = $('tunnelPublish');
+    btn.disabled = true;
+    try {
+      var result = await api('/tunnel/publish', { method: 'POST' });
+      var remote = result.firebase && result.firebase.firestoreUpdated ? 'Firestore + ' : '';
+      toast('URL broadcast: ' + remote + (result.sent || 0) + ' APK client(s)');
+      await load();
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+  async function startNewLogin(mode) {
+    var targetMode = mode || 'loopback';
+    var popup = null;
+    try {
+      popup = window.open('', '_blank');
+      var result = await api('/firebase/login/start', { method: 'POST', body: { mode: targetMode } });
+      showLoginUrl(result.url, result.mode);
+      var openUrl = (result.mode === 'loopback' || result.mode === 'localhost')
+        ? (location.origin + '/firebase-login')
+        : result.url;
+      var opened = false;
+      try {
+        if (popup && !popup.closed) {
+          popup.location.href = openUrl;
+          opened = true;
+        }
+      } catch (err) {
+        opened = false;
+      }
+      if (!opened) toast('Popup blocked. Tap Open login link below.');
+      if (result.mode === 'loopback') {
+        toast('Google login opened. Approve it once; the callback finishes automatically.');
+        watchLogin();
+      } else if (result.mode === 'localhost') {
+        toast('Manual mode. Copy the localhost URL or code into the box when Google returns.');
+        $('loginCode').focus();
+      } else {
+        toast('Google authorization page opened. Paste the code here when done.');
+        $('loginCode').focus();
+      }
+    } catch (err) {
+      if (popup) popup.close();
+      toast(err.message);
+    }
+  }
+
+  $('firebaseAddAccount').addEventListener('click', function () {
+    var pending = firebaseAccountInfo && firebaseAccountInfo.pendingLogin;
+    if (pending && pending.status === 'pending' && pending.url) {
+      showLoginUrl(pending.url, pending.mode);
+      var href = loginHref(firebaseAccountInfo) || pending.url;
+      var popup = window.open(href, '_blank');
+      if (!popup) toast('Popup blocked. Copy the authorization URL below.');
+      if (pending.mode === 'loopback') watchLogin();
+      else $('loginCode').focus();
+      return;
+    }
+    startNewLogin('loopback');
+  });
+
+  $('firebaseNewLogin').addEventListener('click', function () {
+    if (!confirm('Generate a new login link? The previous link stops working.')) return;
+    startNewLogin();
+  });
+
+  $('firebaseLocalLogin').addEventListener('click', function () {
+    if (!confirm('Start the manual login fallback? Use this only if the automatic loopback callback still fails.')) return;
+    startNewLogin('localhost');
+  });
+
+  $('firebaseComplete').addEventListener('click', async function () {
+    var code = ($('loginCode').value || '').trim();
+    if (!code) return toast('Paste the authorization code first');
+    $('firebaseComplete').disabled = true;
+    try {
+      var result = await api('/firebase/login/complete', { method: 'POST', body: { code: code } });
+      var email = result.account && result.account.email ? result.account.email : 'Firebase account';
+      toast('Signed in as ' + email);
+      $('loginUrlWrap').style.display = 'none';
+      $('loginCode').value = '';
+      firebaseProjects = [];
+      firebaseApps = [];
+      firebaseAccountInfo = null;
+      await load();
+      runHealth(false, true);
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      $('firebaseComplete').disabled = false;
+    }
+  });
+
+  $('firebaseCancel').addEventListener('click', function () {
+    $('loginUrlWrap').style.display = 'none';
+    $('loginCode').value = '';
+  });
+
+  $('firebaseRecheck').addEventListener('click', function () { firebaseAccountInfo = null; load(); });
+
+  $('firebaseRefreshProjects').addEventListener('click', async function () {
+    try {
+      firebaseProjects = [];
+      await loadProjects(true);
+      toast('Projects refreshed');
+    } catch (err) {
+      toast(err.message);
+    }
+  });
+
+  $('firebaseAutoSetup').addEventListener('click', async function () {
+    var button = $('firebaseAutoSetup');
+    button.disabled = true;
+    try {
+      var result = await api('/firebase/auto-setup', { method: 'POST' });
+      if (firebaseAccountInfo) firebaseAccountInfo.bootstrap = result.bootstrap;
+      renderBootstrap(result);
+      watchBootstrap();
+      toast('Auto setup started');
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $('firebaseAcceptTos').addEventListener('click', async function () {
+    var button = $('firebaseAcceptTos');
+    var url = button.dataset.url || 'https://console.cloud.google.com/tos?id=cloud';
+    button.disabled = true;
+    try {
+      await api('/firebase/open-tos', { method: 'POST', body: { url: url } });
+    } catch (err) {
+      // The browser fallback below still works without Termux.
+    } finally {
+      button.disabled = false;
+    }
+    window.open(url, '_blank', 'noopener');
+    toast('Accept the terms, then return here. Setup retries automatically.');
+    watchBootstrap();
+  });
+
+  $('firebaseConnectProject').addEventListener('click', async function () {
+    var projectId = $('firebaseProjectSelect').value;
+    if (!projectId) return toast('Choose a project first');
+    var button = $('firebaseConnectProject');
+    button.disabled = true;
+    button.textContent = 'Setting up...';
+    try {
+      var result = await api('/firebase/select-project', { method: 'POST', body: { projectId: projectId } });
+      firebaseApps = result.apps || [];
+      if (firebaseAccountInfo) firebaseAccountInfo.link = result.link;
+      renderApps(firebaseApps, result.link && result.link.appId);
+
+      var setup = await api('/firebase/setup-project', {
+        method: 'POST',
+        body: { projectId: projectId, locationId: 'asia-south1', deployRules: true }
+      });
+      if (firebaseAccountInfo) firebaseAccountInfo.link = setup.link;
+      var dbState = setup.database && setup.database.state ? setup.database.state : 'ready';
+      var notes = [];
+      notes.push('Firestore ' + dbState);
+      if (setup.rulesDeployed) notes.push('rules live');
+      else if (setup.rulesError) notes.push('rules pending');
+      toast('Connected to ' + projectId + ' — ' + notes.join(', '));
+      await load();
+      runHealth(false, true);
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Connect project';
+    }
+  });
+
+  $('firebaseRefreshApps').addEventListener('click', async function () {
+    var projectId = $('firebaseProjectSelect').value || (firebaseAccountInfo && firebaseAccountInfo.link && firebaseAccountInfo.link.projectId);
+    if (!projectId) return toast('Choose a project first');
+    try {
+      firebaseApps = [];
+      await loadApps(projectId, true);
+      toast('Web apps refreshed');
+    } catch (err) {
+      toast(err.message);
+    }
+  });
+
+  $('firebaseSyncApk').addEventListener('click', async function () {
+    var projectId = $('firebaseProjectSelect').value || (firebaseAccountInfo && firebaseAccountInfo.link && firebaseAccountInfo.link.projectId);
+    if (!projectId) return toast('Choose a project first');
+    var appId = $('firebaseAppSelect').value || null;
+    $('firebaseSyncApk').disabled = true;
+    try {
+      var result = await api('/firebase/sync-apk', { method: 'POST', body: { projectId: projectId, appId: appId } });
+      toast('API synced to APK config' + (result.appId ? ' (' + result.appId + ')' : ''));
+      if (firebaseAccountInfo) firebaseAccountInfo.link = result.link;
+      await load();
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      $('firebaseSyncApk').disabled = false;
+    }
+  });
+
+  $('firebaseBuildApk').addEventListener('click', async function () {
+    try {
+      await api('/firebase/build-apk', { method: 'POST' });
+      toast('APK build started');
+      pollBuild();
+    } catch (err) {
+      toast(err.message);
+    }
+  });
+
+  async function removeFirebaseAccount() {
+    if (!confirm('Remove the Firebase CLI account from this server? The Google account itself is not deleted.')) return;
+    var btn = $('profileRemove');
+    if (btn) btn.disabled = true;
+    try {
+      await api('/firebase/logout', { method: 'POST' });
+      firebaseAccountInfo = null;
+      firebaseProjects = [];
+      firebaseApps = [];
+      apkConfigJson = null;
+      if (loginWatch) { clearInterval(loginWatch); loginWatch = null; }
+      if (bootstrapPoll) { clearTimeout(bootstrapPoll); bootstrapPoll = null; }
+      renderApkConfig(null);
+      $('loginUrlWrap').style.display = 'none';
+      toast('Firebase account removed');
+      await load();
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  $('profileRemove').addEventListener('click', removeFirebaseAccount);
+
+  $('firebaseDownloadConfig').addEventListener('click', function () {
+    var suffix = token ? ('?token=' + encodeURIComponent(token)) : '';
+    window.location.href = '/api/admin/firebase/apk-config/download' + suffix;
+  });
+
+  $('firebaseDeleteDatabase').addEventListener('click', async function () {
+    var projectId = (firebaseAccountInfo && firebaseAccountInfo.link && firebaseAccountInfo.link.projectId) || $('firebaseProjectSelect').value;
+    if (!projectId) return toast('Connect a project first');
+    var typed = prompt('This permanently deletes Firestore (default) for ' + projectId + '. Type the project ID to confirm:');
+    if (typed !== projectId) return toast('Cancelled');
+    var button = $('firebaseDeleteDatabase');
+    button.disabled = true;
+    try {
+      var result = await api('/firebase/delete-database', { method: 'POST', body: { projectId: projectId, confirmProjectId: typed } });
+      toast(result.message || 'Firestore deletion started');
+      await load();
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $('firebaseDeleteProject').addEventListener('click', async function () {
+    var projectId = (firebaseAccountInfo && firebaseAccountInfo.link && firebaseAccountInfo.link.projectId) || $('firebaseProjectSelect').value;
+    if (!projectId) return toast('Connect a project first');
+    var typed = prompt('This permanently deletes the entire Firebase project ' + projectId + '. Type the project ID to confirm:');
+    if (typed !== projectId) return toast('Cancelled');
+    var button = $('firebaseDeleteProject');
+    button.disabled = true;
+    try {
+      var result = await api('/firebase/delete-project', { method: 'POST', body: { projectId: projectId, confirmProjectId: typed } });
+      toast(result.message || 'Project deletion started');
+      firebaseAccountInfo = null;
+      await load();
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $('firebaseCopyConfig').addEventListener('click', async function () {
+    try {
+      await copyRawText(JSON.stringify(apkConfigJson || {}, null, 2) + '\n');
+      toast('APK config.json copied');
+    } catch (err) {
+      toast(err.message);
+    }
+  });
+
+  $('firebaseRefreshConfig').addEventListener('click', async function () {
+    try {
+      await loadApkConfig();
+      toast('APK config refreshed');
+    } catch (err) {
+      toast(err.message);
+    }
+  });
+
+  $('firebaseRefresh').addEventListener('click', function () { firebaseAccountInfo = null; load(); });
+  $('firebaseDelete').addEventListener('click', function () {
+    if (confirm('Delete the Firebase server_config document?')) act('/firebase-config', 'DELETE');
+  });
+  $('crashRefresh').addEventListener('click', load);
+  $('crashClear').addEventListener('click', function () {
+    if (confirm('Delete every crash log?')) act('/crash-logs', 'DELETE');
+  });
+
+  load();
+  setTimeout(function () { runHealth(false, true); }, 1400);
+  timer = setInterval(function () {
+    if (document.visibilityState === 'visible' && !isEditing()) load();
+  }, 15000);
+  healthTimer = setInterval(function () {
+    if (document.visibilityState === 'visible' && !isEditing()) runHealth(false, true);
+  }, 30000);
+  window.addEventListener('beforeunload', function () {
+    clearInterval(timer);
+    clearInterval(healthTimer);
+  });
+})();
+</script>
+<link rel="stylesheet" href="/css/nextgen.css">
+</body>
+</html>

@@ -1,0 +1,78 @@
+# Armaan — Protected Release
+# This .gitignore prevents committing sensitive/runtime files
+
+# Dependencies
+node_modules/
+
+# Runtime data
+storage/*
+!storage/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+*.apk
+*.aab
+
+# Android
+APK_clean/.gradle/
+APK_clean/build/
+APK_clean/app/build/
+APK_clean/local.properties
+*.keystore
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary
+*.tmp
+*.temp
+.tmp/
+
+# Cloudflare
+.cloudflared-tunnel.lock
+
+# Backup
+*.bak
+*.backup
+*_backup/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Certificates/Keys
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+# --- render deploy exclusions ---
+factory/
+kg-analysis/
+_ref/
+login/public/*.mp4

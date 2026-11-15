@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060914">
+<meta name="csrf-token" content="<%= csrfToken %>">
+<title>Firebase Master Vault · Armaan Admin</title>
+<link rel="stylesheet" href="/css/admin-premium.css">
+<script>
+  try {
+    var savedTheme = localStorage.getItem('armaan-theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  } catch (e) {}
+  window.__ADMIN__ = <%- JSON.stringify({ csrf: csrfToken }).replace(/</g, '\\u003c') %>;
+</script>
+</head>
+<body>
+<div class="grid-lines" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">A</div>
+    <div>
+      <div class="brand-name">Armaan Control</div>
+      <div class="brand-sub">Super admin · Firebase Master Vault</div>
+    </div>
+  </div>
+  <nav class="top-nav" aria-label="Admin navigation">
+    <a class="nav-link" href="/" title="Main dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <a class="nav-link" href="/admin" title="Firebase & tunnel console">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+      <span>Admin Panel</span>
+    </a>
+    <a class="nav-link" href="/admin/users" title="User & license control">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>User Management</span>
+    </a>
+    <button class="nav-link" id="themeBtn" type="button" title="Toggle color theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      <span id="themeLabel">Light mode</span>
+    </button>
+    <a class="nav-link" href="/logout" title="Sign out">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+      <span>Logout</span>
+    </a>
+  </nav>
+</header>
+
+<main class="shell">
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="pulse"></span> Super admin only · Global Firebase Master Vault</div>
+      <h1>Firebase configurations</h1>
+      <p>View every tenant's linked Firebase project, inspect the full JSON configuration, and download configs with one click. Sub-users can only manage their own config through their portal.</p>
+    </div>
+    <div class="hero-actions">
+      <a class="btn" href="/admin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+        Admin Panel
+      </a>
+      <a class="btn" href="/admin/users">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        User Management
+      </a>
+      <button class="btn btn-primary" id="refreshBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+        Refresh
+      </button>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="Vault statistics">
+    <article class="stat">
+      <div class="stat-head">
+        <span class="stat-label">Total tenants</span>
+        <span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      </div>
+      <div class="stat-value" id="statTotal"><%= stats.total %></div>
+      <div class="stat-foot" id="statTotalFoot"><%= stats.unlinked %> unlinked</div>
+    </article>
+    <article class="stat">
+      <div class="stat-head">
+        <span class="stat-label">Firebase linked</span>
+        <span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+      </div>
+      <div class="stat-value" id="statLinked"><%= stats.linked %></div>
+      <div class="stat-foot"><span class="tiny-dot"></span> Tenants with a Firebase config</div>
+    </article>
+    <article class="stat">
+      <div class="stat-head">
+        <span class="stat-label">Enabled</span>
+        <span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+      </div>
+      <div class="stat-value" id="statEnabled"><%= stats.enabled %></div>
+      <div class="stat-foot">Active for APK injection</div>
+    </article>
+    <article class="stat">
+      <div class="stat-head">
+        <span class="stat-label">Unique projects</span>
+        <span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span>
+      </div>
+      <div class="stat-value" id="statProjects"><%= stats.projects %></div>
+      <div class="stat-foot">Distinct Firebase projects</div>
+    </article>
+  </section>
+
+  <section class="workspace">
+    <div class="card table-card">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+            Tenant Firebase configs
+          </h2>
+          <p class="card-sub">Click a row to inspect or download the full JSON. Badge <span class="badge active" style="font-size:10px;padding:1px 6px">Active</span> means the config will be injected into APK builds.</p>
+        </div>
+        <span class="count-pill" id="visibleCount"><%= users.length %> tenants</span>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="searchInput" type="search" placeholder="Search username, project ID..." autocomplete="off">
+        </div>
+        <div class="segmented" role="group" aria-label="Filter tenants">
+          <button class="active" type="button" data-filter="all">All</button>
+          <button type="button" data-filter="linked">Linked</button>
+          <button type="button" data-filter="enabled">Enabled</button>
+          <button type="button" data-filter="unlinked">Unlinked</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Tenant</th>
+              <th>Project ID</th>
+              <th>Status</th>
+              <th>Enabled</th>
+              <th>Created</th>
+              <th style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody">
+            <% if (!users.length) { %>
+              <tr><td colspan="6">
+                <div class="empty-state">
+                  <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg></div>
+                  <h3>No tenant accounts</h3>
+                  <p>Create tenant accounts in <a href="/admin/users" style="color:var(--brand)">User Management</a>.</p>
+                </div>
+              </td></tr>
+            <% } %>
+            <% users.forEach((user) => { %>
+              <tr data-row="<%= user.id %>" data-user-id="<%= user.id %>" data-filter="<%= user.firebase ? (user.firebase.enabled ? 'enabled' : 'linked') : 'unlinked' %>">
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar"><%= user.initials %></div>
+                    <div>
+                      <div class="username"><%= user.username %></div>
+                      <div class="user-meta">ID: <%= user.id %> · <%= user.role === 'super_admin' ? 'Super Admin' : 'User' %></div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <% if (user.firebase && user.firebase.project_id) { %>
+                    <code><%= user.firebase.project_id %></code>
+                  <% } else { %>
+                    <span class="muted">—</span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (user.firebase) { %>
+                    <span class="badge <%= user.firebase.enabled ? 'active' : 'neutral' %>"><span class="dot"></span><%= user.firebase.enabled ? 'Linked' : 'Linked (disabled)' %></span>
+                  <% } else { %>
+                    <span class="badge neutral"><span class="dot"></span>Not linked</span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (user.firebase) { %>
+                    <label class="toggle" title="Toggle Firebase injection for APK builds">
+                      <input type="checkbox" class="enabled-toggle" data-user-id="<%= user.id %>" <%= user.firebase.enabled ? 'checked' : '' %>>
+                      <span class="slider"></span>
+                    </label>
+                  <% } else { %>
+                    <span class="muted">—</span>
+                  <% } %>
+                </td>
+                <td><%= user.firebase ? fmtDate(user.firebase.created_at) : '—' %></td>
+                <td style="text-align:right">
+                  <div class="action-group">
+                    <% if (user.firebase) { %>
+                      <button class="btn-icon" type="button" data-action="download" data-user-id="<%= user.id %>" title="Download Firebase config JSON">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+                      </button>
+                      <button class="btn-icon" type="button" data-action="view" data-user-id="<%= user.id %>" title="View full JSON">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                      </button>
+                      <button class="btn-icon danger" type="button" data-action="delete" data-user-id="<%= user.id %>" title="Unlink Firebase config">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                      </button>
+                    <% } else { %>
+                      <span class="muted">No config</span>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- JSON View Modal -->
+<div class="modal-backdrop" id="jsonModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div>
+        <h3 id="jsonModalTitle">Firebase Config</h3>
+        <p>Full JSON configuration for <strong id="jsonModalUser"></strong></p>
+      </div>
+    </div>
+    <div class="modal-body">
+      <pre id="jsonModalContent" style="max-height:60vh;overflow:auto;font-size:11px;line-height:1.5"></pre>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="jsonModalCopy" type="button">Copy JSON</button>
+      <button class="btn btn-primary" id="jsonModalDownload" type="button">Download .json</button>
+      <button class="btn btn-ghost" id="jsonModalClose" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-backdrop" id="deleteModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg></div>
+      <div>
+        <h3>Unlink Firebase config?</h3>
+        <p>This will remove the Firebase configuration for <strong id="deleteUser"></strong>. The tenant will need to re-link their config for APK builds to include Firebase.</p>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="deleteCancel" type="button">Cancel</button>
+      <button class="btn btn-danger" id="deleteConfirm" type="button">Unlink</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script src="/js/admin-vault.js"></script>
+<link rel="stylesheet" href="/css/nextgen.css">
+</body>
+</html>

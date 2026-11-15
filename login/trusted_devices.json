@@ -1,0 +1,72 @@
+[
+  {
+    "fingerprint": "816e859484c67f96120bf3666627241a",
+    "username": "olivia",
+    "deviceInfo": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36",
+      "deviceId": "07a18e2968533b710f87619ed1cf1954eefcb9840dae8635"
+    },
+    "addedAt": "2026-11-13T06:39:25.767Z",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36"
+  },
+  {
+    "fingerprint": "8d0993a44fac5e3f2607c5d9b2d0c0c5",
+    "username": "olivia",
+    "deviceInfo": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36",
+      "deviceId": "8607006619b3fabeda8f47ac991fe29a40a96b67d17547fe"
+    },
+    "addedAt": "2026-11-13T14:20:02.673Z",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
+  },
+  {
+    "fingerprint": "215956d513f401dfac8408d573c64205",
+    "username": "olivia",
+    "deviceInfo": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36",
+      "deviceId": "14c154f6791109ce7094311cbfec198503222593c903d777"
+    },
+    "addedAt": "2026-11-14T03:34:52.146Z",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36"
+  },
+  {
+    "fingerprint": "4605cef6f7d8f02ffd2bcbc4e646730c",
+    "username": "olivia",
+    "deviceInfo": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36",
+      "deviceId": "67488d28510a2424d2319fdb2bef78605c94ccc4c371ab2f"
+    },
+    "addedAt": "2026-11-14T04:39:25.843Z",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36"
+  },
+  {
+    "fingerprint": "c4c8158912cede3099d5b97ef5416b4f",
+    "username": "olivia",
+    "deviceInfo": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36",
+      "deviceId": "77cc190588fa0063e44bfde3dbeba79d7ec98079c7cd4ce7"
+    },
+    "addedAt": "2026-11-14T06:28:45.942Z",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
+  },
+  {
+    "fingerprint": "0bdb92249c692f8765565d0c666fe112",
+    "username": "olivia",
+    "deviceInfo": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36",
+      "deviceId": "aea860c650e077575864772a3ae29f420bf2fd72324f9702"
+    },
+    "addedAt": "2026-11-14T07:15:56.742Z",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36"
+  },
+  {
+    "fingerprint": "83360a485fc0c5a1997d66b5b6246c22",
+    "username": "olivia",
+    "deviceInfo": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36",
+      "deviceId": "d7b00aa2e326dd868797e8b4938c17ccd38678aa3487a599"
+    },
+    "addedAt": "2026-11-14T08:26:20.969Z",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) OpenCode/2.2.6 Chrome/152.0.7977.167 Electron/44.9.1 Safari/537.36"
+  }
+]

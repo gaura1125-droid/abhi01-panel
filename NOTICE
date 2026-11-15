@@ -1,0 +1,66 @@
+Armaan — Admin Dashboard & Device Control Platform
+=====================================================
+
+This product includes software developed by the Armaan Project
+and the following third-party components:
+
+Node.js Runtime Dependencies (package.json)
+--------------------------------------------
+- express (MIT) — Fast, unopinionated web framework
+- ejs (Apache-2.0) — Embedded JavaScript templates
+- express-session (MIT) — Session middleware
+- better-sqlite3 (MIT) — SQLite3 bindings
+- cookie-signature (MIT) — Cookie signing
+- ws (MIT) — WebSocket implementation
+- uuid (MIT) — UUID generator
+- bcryptjs (MIT) — Password hashing
+- multer (MIT) — Multipart form handling
+- sharp (Apache-2.0) — Image processing
+- node-telegram-bot-api (MIT) — Telegram Bot API
+- firebase (Apache-2.0) — Firebase client SDK
+- firebase-admin (MIT) — Firebase Admin SDK (optional)
+- adm-zip (MIT) — ZIP file handling
+- cloudflared (MIT) — Cloudflare Tunnel client
+- werift (MPL-2.0) — WebRTC implementation
+
+Frontend Libraries (CDN)
+-------------------------
+- Font Awesome 6.4.0 (CC BY 4.0 / SIL OFL 1.1) — Icons
+- Space Grotesk Font (SIL OFL 1.1) — Typography
+- IBM Plex Mono Font (SIL OFL 1.1) — Monospace typography
+- Inter Font (SIL OFL 1.1) — UI typography
+
+Android APK (APK_clean/)
+-------------------------
+- Android Support Library (Apache-2.0)
+- AndroidX Libraries (Apache-2.0)
+- Material Components (Apache-2.0)
+- ConstraintLayout (Apache-2.0)
+- OkHttp (Apache-2.0)
+- Firebase Database (Apache-2.0)
+- StringFog/XOR (Apache-2.0) — String obfuscation
+- WorkManager (Apache-2.0)
+
+Build Tools
+------------
+- Node.js (MIT) — JavaScript runtime
+- npm (Artistic-2.0) — Package manager
+- Vite (MIT) — Build tool
+- Gradle (Apache-2.0) — Android build system
+- javascript-obfuscator (MIT) — Source code obfuscation
+
+System Requirements
+-------------------
+- Linux (Ubuntu 20.04+, Debian 11+, Fedora 35+, Arch, Alpine)
+- macOS 12+ (Intel/Apple Silicon)
+- Termux (Android 7+)
+- Node.js 18+
+- Java 17+ (for APK builds)
+- Android SDK API 34 (for APK builds)
+
+All third-party licenses are preserved in their respective
+node_modules/ and APK_clean/ directories.
+
+For license texts, see:
+- node_modules/*/LICENSE*
+- APK_clean/gradle/license/

@@ -1,0 +1,60 @@
+{
+    "connection":  {
+                       "public_url":  "https://drag-specifications-santa-mesh.trycloudflare.com",
+                       "dashboard_port":  3000,
+                       "apk_port":  22222
+                   },
+    "server":  {
+                   "host":  "0.0.0.0",
+                   "port":  22222,
+                   "baseUrl":  "http://127.0.0.1:22222",
+                   "publicUrl":  "https://drag-specifications-santa-mesh.trycloudflare.com",
+                   "overlay_base_url":  "http://127.0.0.1:3000"
+               },
+    "client":  {
+                   "apiUrl":  "http://127.0.0.1:22222",
+                   "servicesUrl":  "/services"
+               },
+    "services":  {
+                     "screen":  "/screen",
+                     "device":  "/device",
+                     "health":  "/health",
+                     "apps":  "/apps",
+                     "touch":  "/inject-touch",
+                     "screenshot":  "/screenshot",
+                     "ping":  "/api/ping",
+                     "error":  "/api/error"
+                 },
+    "protocol":  {
+                     "type":  "websocket",
+                     "serialization":  "json",
+                     "encoding":  "utf8",
+                     "base64":  true
+                 },
+    "features":  {
+                     "screenshot_only":  false,
+                     "live_screen":  true,
+                     "screen_control":  true,
+                     "injection_module":  true,
+                     "streaming":  true,
+                     "call_manager":  true,
+                     "sms_manager":  true,
+                     "apk_websocket":  true,
+                     "cloudflare_tunnel":  true
+                 },
+    "security":  {
+                     "tls":  false,
+                     "authentication":  false
+                 },
+    "device":  {
+                   "screen_width":  720,
+                   "screen_height":  1604,
+                   "model":  "RMX3997",
+                   "android_version":  "14"
+               },
+    "cloudflare":  {
+                       "url":  "https://drag-specifications-santa-mesh.trycloudflare.com",
+                       "status":  "running",
+                       "updatedAt":  "2026-11-15T00:39:06.903Z"
+                   }
+}

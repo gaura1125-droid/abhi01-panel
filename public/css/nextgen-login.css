@@ -1,0 +1,130 @@
+/* ============================================================
+   VYzX — NEXTGEN LOGIN LAYER (loaded after cyber.css)
+   Black / crimson re-theme. VYzX branding kept, structure kept.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap');
+
+:root{
+  /* surfaces */
+  --bg-deep:#050506;
+  --bg-navy:#0a0a0c;
+  --bg-card:rgba(13,13,16,0.94);
+  --bg-card-hover:rgba(19,19,23,0.97);
+  --bg-input:rgba(9,9,11,0.94);
+  --bg-input-focus:rgba(14,14,17,0.97);
+
+  /* accents: crimson leads, ember supports */
+  --neon-green:#ff2d55;
+  --neon-green-dim:#e01f45;
+  --neon-cyan:#ff6b3d;
+  --neon-cyan-dim:#e85a2e;
+  --neon-blue:#ff8f5c;
+  --neon-purple:#ff5c7a;
+  --neon-magenta:#ff2d55;
+  --neon-orange:#fbbf24;
+  --neon-red:#ff2d55;
+
+  /* text */
+  --text-primary:#f5f5f7;
+  --text-secondary:#b5b5bd;
+  --text-muted:#7c7c88;
+  --text-dim:#5c5c68;
+  --text-on-dark:#050506;
+
+  /* glass */
+  --glass-bg:rgba(12,12,14,0.92);
+  --glass-bg-strong:rgba(15,15,18,0.96);
+  --glass-border:rgba(255,45,85,0.22);
+  --glass-border-strong:rgba(255,45,85,0.45);
+  --glass-shadow:0 0 60px rgba(255,45,85,0.09);
+  --glass-shadow-strong:0 0 80px rgba(255,45,85,0.16);
+  --glass-inner-glow:inset 0 1px 0 rgba(255,255,255,0.05);
+
+  /* focus & glow */
+  --focus-green:rgba(255,45,85,0.55);
+  --focus-cyan:rgba(255,107,61,0.5);
+  --focus-purple:rgba(255,92,122,0.5);
+  --glow-green:0 0 30px rgba(255,45,85,0.25);
+  --glow-cyan:0 0 30px rgba(255,107,61,0.2);
+  --glow-purple:0 0 30px rgba(255,92,122,0.2);
+
+  /* gradients — solid values so nothing renders as a blend */
+  --grad-primary:#ff2d55;
+  --grad-cyber:#0a0a0c;
+  --grad-panel:linear-gradient(145deg,rgba(15,15,18,0.97) 0%,rgba(7,7,9,0.99) 100%);
+  --grad-border:linear-gradient(135deg,#ff2d55,#ff6b3d,#ff5c7a,#fbbf24);
+  --grad-text:#f5f5f7;
+  --grad-button:#ff2d55;
+  --grad-button-hover:#e01f45;
+}
+
+/* ---- Background: pitch black ---- */
+body{background:#050506 !important}
+.scanlines{opacity:.45}
+.circuit-traces{opacity:.5}
+
+/* ---- Typography ---- */
+.login-panel .brand-title{
+  font-family:'Sora',sans-serif;font-weight:800;letter-spacing:-.02em;
+  color:#f5f5f7;background:none;-webkit-text-fill-color:#f5f5f7;
+}
+.login-panel .brand-subtitle{
+  font-family:'Sora',sans-serif;letter-spacing:.22em;font-size:11px;
+  text-transform:uppercase;
+}
+.login-panel .brand-badge{
+  font-family:'Sora',sans-serif;font-weight:700;letter-spacing:.18em;
+  background:rgba(255,45,85,0.1);
+  border:1px solid rgba(255,45,85,0.4);
+  color:#ff89a2;
+}
+.login-panel .brand-badge .badge-version{color:#ff6b3d;border-color:rgba(255,107,61,0.4)}
+
+/* ---- Panel ---- */
+.login-panel .panel-glass{border-radius:18px}
+.login-panel .panel-glass::after{
+  background:linear-gradient(90deg,transparent,rgba(255,45,85,0.7),rgba(255,107,61,0.55),transparent);
+}
+.login-panel .login-panel::before{filter:blur(90px)}
+.login-panel .status-item{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:999px;
+}
+.login-panel .status-dot{background:#ff2d55;box-shadow:0 0 8px rgba(255,45,85,0.8)}
+.login-panel .status-dot.cyan{background:#ff6b3d;box-shadow:0 0 8px rgba(255,107,61,0.8)}
+.login-panel .status-dot.purple{background:#fbbf24;box-shadow:0 0 8px rgba(251,191,36,0.7)}
+
+/* ---- Inputs ---- */
+.login-panel .input-wrapper{
+  background:rgba(9,9,11,0.95);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:11px;
+}
+.login-panel .otp-input{
+  background:rgba(9,9,11,0.95);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:11px;
+}
+.login-panel .otp-input:focus{
+  border-color:rgba(255,45,85,0.75);
+  box-shadow:0 0 0 3px rgba(255,45,85,0.16);
+}
+
+/* ---- Buttons ---- */
+.login-panel button[type="submit"],
+.login-panel .submit-btn,
+.login-panel .action-btn{
+  border-radius:10px;
+  font-family:'Sora',sans-serif;
+  font-weight:700;
+  letter-spacing:.06em;
+}
+.login-panel button[type="submit"]:hover,
+.login-panel .submit-btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(255,45,85,0.35)}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:#050506}
+::-webkit-scrollbar-thumb{background:#26262b;border-radius:8px}
+::selection{background:rgba(255,45,85,0.4);color:#fff}

